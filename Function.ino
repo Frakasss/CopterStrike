@@ -29,9 +29,9 @@ void fnctn_checkButtons() {
       if(gb.buttons.pressed(BTN_C)){gb.titleScreen(gamelogo);}
     
       if(gb.buttons.pressed(BTN_B)){
-        switch(player.isLanding){
-          case 0: if(player.hSpeed==0 && player.vSpeed==0 && player.altitude == MAXALTITUDE){player.isLanding = 1;}break;
-          case 1: if(player.isCrashing==0){player.isLanding = 0;} break;
+        switch(player.moveMode){
+          case 0: player.moveMode=1; break;
+          case 1: player.moveMode=0; break;
         }
       }
     
@@ -84,6 +84,9 @@ void fnctn_checkButtons() {
           player.fire = 1;
         }else{
           player.fire = 0;
+        }
+
+        if(player.moveMode==0){
           if(player.hSpeed>0  && player.vSpeed==0){player.dir=0;}
           if(player.hSpeed>0  && player.vSpeed>0 ){player.dir=1;}
           if(player.hSpeed==0 && player.vSpeed>0 ){player.dir=2;}
@@ -114,13 +117,15 @@ void fnctn_initPlayer(){
   player.isCrashing=0;
   
   player.ammo=MAXAMMO;
-  player.life=MAXLIFE;
-  player.fuel=MAXFUEL;
+  player.life=MAXLIFE-MAXFUEL;
+  player.fuel=1;
   player.fuelCheck = 0;
   player.fire=0;
   
   player.animHelix=0;
   player.animBoom = 0;
+
+  player.moveMode = 0; //0rotate //1straff
 
   for(i=0;i<MAXBULLET;i++){
     bullet[i].x_world=0;
@@ -233,13 +238,14 @@ void fnctn_initEnnemyFire(){
           bullet[j].y_world=coordy;
           bullet[j].distance=1;
           bullet[j].dir=0;
-          if(player.x_world>coordx+5 && player.y_world-player.altitude>coordy+5)                            {bullet[j].dir=1;}
-          if(player.x_world>coordx-6 && player.x_world<coordx+6 && player.y_world-player.altitude>coordy)   {bullet[j].dir=2;}
-          if(player.x_world<coordx-5 && player.y_world-player.altitude>coordy+5)                            {bullet[j].dir=3;}
-          if(player.x_world<coordx && player.y_world-player.altitude>coordy-6 && player.y_world-player.altitude<coordy+6){bullet[j].dir=4;}
-          if(player.x_world<coordx-5 && player.y_world-player.altitude<coordy-5)                            {bullet[j].dir=5;}
-          if(player.x_world>coordx-6 && player.x_world<coordx+6 && player.y_world-player.altitude<coordy-6) {bullet[j].dir=6;}
-          if(player.x_world>coordx+5 && player.y_world-player.altitude<coordy-5)                            {bullet[j].dir=7;}
+          
+          if(player.x_world>coordx+5 && player.y_world-player.altitude>coordy+5)                            {bullet[j].dir=1+random(0,2)-1;}
+          if(player.x_world>coordx-6 && player.x_world<coordx+6 && player.y_world-player.altitude>coordy)   {bullet[j].dir=2+random(0,2)-1;}
+          if(player.x_world<coordx-5 && player.y_world-player.altitude>coordy+5)                            {bullet[j].dir=3+random(0,2)-1;}
+          if(player.x_world<coordx && player.y_world-player.altitude>coordy-6 && player.y_world-player.altitude<coordy+6){bullet[j].dir=4+random(0,2)-1;}
+          if(player.x_world<coordx-5 && player.y_world-player.altitude<coordy-5)                            {bullet[j].dir=5+random(0,2)-1;}
+          if(player.x_world>coordx-6 && player.x_world<coordx+6 && player.y_world-player.altitude<coordy-6) {bullet[j].dir=6+random(0,2)-1;}
+          if(player.x_world>coordx+5 && player.y_world-player.altitude<coordy-5)                            {bullet[j].dir=7+random(0,1)-1;}
         }
       }
     }
@@ -307,44 +313,48 @@ void fnctn_checkPlayerFire(){
 //##################################################################
 //##################################################################
 void fnctn_checkLanding(){
-  if(player.isLanding==1 && player.altitude ==3){
-    check01=0;
-    for(i=fnctn_playerXpos(player.x_world)-2;i <fnctn_playerXpos(player.x_world)+2;i++){
-      for(j=fnctn_playerYpos(player.y_world)-1;j<fnctn_playerYpos(player.y_world)+1;j++){
-        if(gb.display.getPixel(i,j)==1){check01=1;}
-      }
-    }
-    if(check01==1){
-      if(player.life>0){player.life=player.life -5;}
-      if(player.life<=0){
-        player.isCrashing=1;
-      }else{
-        player.animDamage = 12;
-        player.isLanding=0;
-      }
-    }
-  }
-
-  if(player.isLanding==1 && player.altitude==0 && player.isCrashing==0){
+  if(player.vSpeed==0    && player.hSpeed==0   && player.isLanding==0){
     switch(lvl){
       case 0:
         for(i=0;i<nbBackground;i++){
           if(player.x_world>bkgrnd[i].x_world   && player.x_world<bkgrnd[i].x_world+bkgrnd[i].width     && player.y_world>bkgrnd[i].y_world     && player.y_world<bkgrnd[i].y_world+bkgrnd[i].height){
             switch(i){
-              case 0: player.life = MAXLIFE; player.fuel = MAXFUEL; break;
-              case 1: player.life = MAXLIFE; break;
-              case 2: player.fuel = MAXFUEL; break;
-              case 3: player.fuel = MAXFUEL; break;
-              case 4: player.fuel = MAXFUEL; break;
-              case 5: player.fuel = MAXFUEL; break;
-              case 6: player.life = MAXLIFE; break;
-              case 7: player.life = MAXLIFE; player.fuel = MAXFUEL; break;
+              case 0: if(player.life<MAXLIFE-1 || player.fuel<MAXFUEL-1){player.isLanding=1;} break;
+              case 1: if(player.life<MAXLIFE-1){player.isLanding=1;} break;
+              case 2: if(player.fuel<MAXFUEL-1){player.isLanding=1;} break;
+              case 3: if(player.fuel<MAXFUEL-1){player.isLanding=1;} break;
+              case 4: if(player.fuel<MAXFUEL-1){player.isLanding=1;} break;
+              case 5: if(player.fuel<MAXFUEL-1){player.isLanding=1;} break;
+              case 6: if(player.life<MAXLIFE-1){player.isLanding=1;} break;
+              case 7: if(player.life<MAXLIFE-1 || player.fuel<MAXFUEL-1){player.isLanding=1;} break;
             }
           }
         }
       break;
-    }    
+    }
   }
+
+  if(player.isLanding==1 && player.altitude==0){
+    switch(lvl){
+      case 0:
+        for(i=0;i<nbBackground;i++){
+          if(player.x_world>bkgrnd[i].x_world   && player.x_world<bkgrnd[i].x_world+bkgrnd[i].width     && player.y_world>bkgrnd[i].y_world     && player.y_world<bkgrnd[i].y_world+bkgrnd[i].height){
+            switch(i){
+              case 0: if(player.life==MAXLIFE && player.fuel==MAXFUEL){player.isLanding=0;}else{if(player.life<MAXLIFE){player.life++;} if(player.fuel<MAXFUEL){player.fuel++;}} break;
+              case 1: if(player.life==MAXLIFE){player.isLanding=0;}else{if(player.life<MAXLIFE){player.life++;}} break;
+              case 2: if(player.fuel==MAXFUEL){player.isLanding=0;}else{if(player.fuel<MAXFUEL){player.fuel++;}} break;
+              case 3: if(player.fuel==MAXFUEL){player.isLanding=0;}else{if(player.fuel<MAXFUEL){player.fuel++;}} break;
+              case 4: if(player.fuel==MAXFUEL){player.isLanding=0;}else{if(player.fuel<MAXFUEL){player.fuel++;}} break;
+              case 5: if(player.fuel==MAXFUEL){player.isLanding=0;}else{if(player.fuel<MAXFUEL){player.fuel++;}} break;
+              case 6: if(player.life==MAXLIFE){player.isLanding=0;}else{if(player.life<MAXLIFE){player.life++;}} break;
+              case 7: if(player.life==MAXLIFE && player.fuel==MAXFUEL){player.isLanding=0;}else{if(player.life<MAXLIFE){player.life++;} if(player.fuel<MAXFUEL){player.fuel++;}} break;
+            }
+          }
+        }
+      break;
+    }  
+    
+  } 
 }
 
 //##################################################################

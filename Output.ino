@@ -76,49 +76,49 @@ void outpt_drawPlayerFire(){
     switch(player.dir){
       case 0 : 
       if(cptAnim%4==0){
-      gb.display.drawLine(coordx+6 , coordy-10  , coordx+16 , coordy-0 );} 
+      gb.display.drawLine(coordx+6 , coordy-player.altitude  , coordx+16 , coordy-0 );} //10
       gb.display.drawBitmap(coordx+12 , coordy-4, impact[cptAnim%3]);
       break;
       
       case 1 : 
       if(cptAnim%4==0){
-      gb.display.drawLine(coordx+3 , coordy-9  , coordx+8 , coordy+5 );}
+      gb.display.drawLine(coordx+3 , coordy-(player.altitude-1)  , coordx+8 , coordy+5 );}//9
       gb.display.drawBitmap(coordx+4 , coordy+1,  impact[cptAnim%3]);
       break;
       
       case 2 : 
       if(cptAnim%4==0){
-      gb.display.drawLine(coordx+0  , coordy-10  , coordx+0  , coordy+8);}
+      gb.display.drawLine(coordx+0  , coordy-player.altitude  , coordx+0  , coordy+8);}
       gb.display.drawBitmap(coordx-4  , coordy+4, impact[cptAnim%3]);
       break;
       
       case 3 : 
       if(cptAnim%4==0){
-      gb.display.drawLine(coordx-3  , coordy-9  , coordx-8  , coordy+5 );}
+      gb.display.drawLine(coordx-3  , coordy-(player.altitude-1)  , coordx-8  , coordy+5 );}
       gb.display.drawBitmap(coordx-12 , coordy+1, impact[cptAnim%3],NOROT,FLIPH); 
       break;
       
       case 4 : 
       if(cptAnim%4==0){
-      gb.display.drawLine(coordx-6  , coordy-10  , coordx-16  , coordy+0 );} 
+      gb.display.drawLine(coordx-6  , coordy-player.altitude  , coordx-16  , coordy+0 );} 
       gb.display.drawBitmap(coordx-20  , coordy-4,  impact[cptAnim%3],NOROT,FLIPH); 
       break;
       
       case 5 : 
       if(cptAnim%4==0){
-      gb.display.drawLine(coordx-5  , coordy-12 , coordx-8  , coordy-5 );} 
+      gb.display.drawLine(coordx-5  , coordy-(player.altitude+2) , coordx-8  , coordy-5 );} 
       gb.display.drawBitmap(coordx-12  , coordy-9,  impact[cptAnim%3],NOROT,FLIPH); 
       break;
       
       case 6 : 
       if(cptAnim%4==0){
-      gb.display.drawLine(coordx+0  , coordy-10  , coordx+0  , coordy-8 );} 
+      gb.display.drawLine(coordx+0  , coordy-player.altitude  , coordx+0  , coordy-8 );} 
       gb.display.drawBitmap(coordx-4  , coordy-12,  impact[cptAnim%3],NOROT,FLIPH); 
       break;
       
       case 7 : 
       if(cptAnim%4==0){
-      gb.display.drawLine(coordx+5 , coordy-12 , coordx+8 , coordy-5 );} 
+      gb.display.drawLine(coordx+5 , coordy-(player.altitude+2) , coordx+8 , coordy-5 );} 
       gb.display.drawBitmap(coordx+4 , coordy-9,  impact[cptAnim%3]); 
       break;
     }

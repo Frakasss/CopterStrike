@@ -12,7 +12,7 @@ Gamebuino gb;
 #define LEVELHEIGHT 1000
 #define SPRITESIZE 125
 
-#define MAXALTITUDE 10
+#define MAXALTITUDE 5
 #define MAXFUEL 20
 #define MAXLIFE 100
 #define MAXAMMO 50
@@ -71,6 +71,7 @@ typedef struct{
   byte animHelix;
   byte animBoom;
   byte animDamage;
+  byte moveMode;
 } Player;
 
 typedef struct{
