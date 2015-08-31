@@ -8,16 +8,19 @@ Gamebuino gb;
 #define SCREENWIDTH 84
 #define SCREENHEIGHT 48
 #define VERTALIGNMENT 10
-#define LEVELWIDTH 1000
-#define LEVELHEIGHT 1000
+#define LEVELWIDTH 630
+#define LEVELHEIGHT 630
 #define SPRITESIZE 125
 
-#define MAXALTITUDE 5
-#define MAXFUEL 20
-#define MAXLIFE 100
-#define MAXAMMO 50
+#define MAXALTITUDE 8
+#define MAXFUEL 30
+#define MAXLIFE 50
 #define MAXBULLET 10
 
+#define TMPUNIT 20
+#define TMPTANK 40
+#define TMPTOUR 20
+#define TMPBUNKER 10
 
 //Sprites
 extern const byte gamelogo[];
@@ -46,8 +49,11 @@ extern const byte Desert_cactus[];
 extern const byte Desert_tree[];
 extern const byte Desert_rock[];
 
+extern const byte Ennemy_Unit[];
+
 extern const byte* sprites[];
 extern const byte* destroy[];
+extern const byte* tank[];
 
 //Sounds
 extern const byte soundfx[6][8];
@@ -63,7 +69,6 @@ typedef struct{
   byte altitude;
   byte isLanding;
   byte fire;
-  byte ammo;
   byte fuel;
   byte fuelCheck;
   byte life;
@@ -91,6 +96,29 @@ typedef struct{
   byte life; 
   byte animBoom;
   byte fireTimer;
+} Hostile;
+
+typedef struct{
+  int x_world;
+  int y_world;
+  byte width;
+  byte height;
+  byte sprite;
+  byte life; 
+  byte animBoom;
+  byte fireTimer;
+  byte dir;
+  byte batiment;
+} HostileMobile;
+
+typedef struct{
+  int x_world;
+  int y_world;
+  byte width;
+  byte height;
+  byte sprite;
+  byte life; 
+  byte animBoom;
 } Object;
 
 typedef struct{
@@ -100,15 +128,18 @@ typedef struct{
   byte height;
 } Friend;
 
-Player player;
-Friend bkgrnd[10];
-Object landscape[30];
-Bullet bullet[MAXBULLET];
+Player        player;
+Friend        bkgrnd[5];
+Object        building_friend[15];
+Hostile       building_hostile[30];
+HostileMobile mobilUnit_hostile[20];
+Bullet        bullet[MAXBULLET];
 
 //Global Variables
 byte i;
 byte j;
 byte check01;
+byte check02;
 byte cptAnim;
 byte gameStatus;
 byte lvl;
@@ -116,9 +147,10 @@ int coordx;
 int coordy;
 byte width;
 byte height;
-byte nbLandscape;
-byte nbBackground;
-byte nbEnnemy;
+byte nbHeliport;
+byte nbBuilding_Hostile;
+byte nbBuilding_Friend;
+
 
 
 //#####################################################
@@ -129,7 +161,6 @@ void setup() {
   lvl = 0;
   cptAnim=0;
   fnctn_initPlayer();
-  //fnctn_initLandscape();
   gb.titleScreen(gamelogo);
   gb.battery.show=false;
 }
@@ -148,24 +179,40 @@ void loop() {
 
 
       case 2 :
-        //draw
-        outpt_drawBackground1();
-        fnctn_checkLanding();
-        outpt_drawBackground2();
-        outpt_drawPlayer();
+        //draw baseCamps          (Base, fuel, garage, heliport)
+        outpt_drawbaseCamps();
+        
+        
+        //draw friendBuildings  (Village, Camps) 
+        outpt_drawBuilding_Friend();
+        //draw hostileBuildings (Tour, Bunker) & Mobiles(Units, Tank)
+        outpt_drawBuilding_Hostile();
+        outpt_drawMobile_Hostile();
+
+        //draw background         (tree, bush, sand, rocks)
+        outpt_drawBackground();
+        
+        //draw player & ennemy Fire
         outpt_drawPlayerFire();
         outpt_drawEnnemyFire();
+        
+        //draw HUD + Player
         outpt_drawHUD();
+        outpt_drawPlayer();
+        
+        //draw animBoom
         outpt_animBoom();
-    
+
+        
         //checks
+        fnctn_checkLanding();
         fnctn_checkButtons();
         fnctn_checkPlayerAltitude();
         fnctn_checkPlayerFire();
         fnctn_checkEnnemyFire();
         fnctn_checkFuel();
     
-        //animation Timers
+        //Timers
         fnctn_initEnnemyFire();
         fnctn_animation();
       break;
