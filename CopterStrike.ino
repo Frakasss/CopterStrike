@@ -21,6 +21,8 @@ Gamebuino gb;
 #define TMPTANK 40
 #define TMPTOUR 20
 #define TMPBUNKER 10
+#define TMPRESURECTION 200
+
 
 //Sprites
 extern const byte gamelogo[];
@@ -215,6 +217,8 @@ void loop() {
         //Timers
         fnctn_initEnnemyFire();
         fnctn_animation();
+        fnctn_resurection();
+        
       break;
     }
   }
