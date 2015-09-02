@@ -145,6 +145,9 @@ byte check02;
 byte cptAnim;
 byte gameStatus;
 byte lvl;
+byte difficulty;
+int money;
+byte destroyedBuildings;
 int coordx;
 int coordy;
 byte width;
@@ -161,6 +164,8 @@ void setup() {
   gb.begin();
   gameStatus = SELECTMAP;
   lvl = 0;
+  difficulty=0;
+  money=0;
   cptAnim=0;
   fnctn_initPlayer();
   gb.titleScreen(gamelogo);
@@ -189,7 +194,7 @@ void loop() {
         outpt_drawBuilding_Friend();
         //draw hostileBuildings (Tour, Bunker) & Mobiles(Units, Tank)
         outpt_drawBuilding_Hostile();
-        outpt_drawMobile_Hostile();
+        if(difficulty>0){outpt_drawMobile_Hostile();}
 
         //draw background         (tree, bush, sand, rocks)
         outpt_drawBackground();
@@ -217,7 +222,7 @@ void loop() {
         //Timers
         fnctn_initEnnemyFire();
         fnctn_animation();
-        fnctn_resurection();
+        if(difficulty==2){fnctn_resurection();}
         
       break;
     }

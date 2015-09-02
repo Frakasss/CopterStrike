@@ -152,36 +152,57 @@ void outpt_drawEnnemyFire(){
 //##################################################################
 void outpt_drawHUD(){
   gb.display.setColor(WHITE);
-  gb.display.fillRect(0,0,84,4);
+  gb.display.fillRect(0,0,84,5);
   gb.display.setColor(BLACK);
-  gb.display.drawBitmap(0,0,HUD);
-  
-  gb.display.fillRect(7,1,player.life/(MAXLIFE/10),2); //life
-  gb.display.fillRect(24,1,player.fuel/(MAXFUEL/10),2); //fuel
+  gb.display.drawBitmap(42,1,HUD);
 
-  gb.display.print("              "); 
-  gb.display.print(gb.getCpuLoad());
-  //gb.display.print("  "); 
+  switch(player.moveMode){
+    case 0: gb.display.print("$");gb.display.print(money); break;
+    case 1: gb.display.print(destroyedBuildings);gb.display.print("/");gb.display.print(nbBuilding_Hostile); break;
+  }
   
+  gb.display.fillRect(49,2,player.life/(MAXLIFE/10),2); //life
+  gb.display.fillRect(66,2,player.fuel/(MAXFUEL/10),2); //fuel
+
+
+  gb.display.cursorX = 79;
+  gb.display.cursorY = 0;
+  switch(player.moveMode){
+    case 0: gb.display.print("@  "); break;
+    case 1: gb.display.print("-  "); break;
+  }
 }
 
 
 //##################################################################
 //##################################################################
 void outpt_menu(){
-
   switch(lvl){
     case 0: gb.display.print("     Desert Strike"); break;
     case 1: gb.display.print("     Forest Strike"); break;
   }
-  gb.display.drawRect(23,14,24,24);
-  gb.display.drawBitmap(27,28,Desert_sand);
-  gb.display.drawBitmap(35,20,Desert_bush);
+  gb.display.drawRect(10,7,30,19);
+  gb.display.drawBitmap(22,17,Desert_sand);
+  gb.display.drawBitmap(29,19,Desert_sand);
+  gb.display.drawBitmap(30,9,Desert_bush);
+  gb.display.drawBitmap(12,9,Desert_cactus);
 
-  gb.display.drawRect(50,14,24,24);
+  gb.display.drawRect(50,7,30,19);
   //gb.display.drawBitmap(33,16,tree03);
 
-  gb.display.drawRect(22+(lvl*27),13,26,26);
+  gb.display.drawRect(9+(lvl*40),6,32,21);
+  
+  gb.display.cursorX = 35;
+  gb.display.cursorY = 30;
+  gb.display.print("Easy");
+  gb.display.cursorX = 35;
+  gb.display.cursorY = 36;
+  gb.display.print("Normal");
+  gb.display.cursorX = 35;
+  gb.display.cursorY = 42;
+  gb.display.print("Hard");
+  gb.display.drawBitmap(15 ,29+(difficulty*6)     ,copterProfile);
+  gb.display.drawBitmap(17 ,29+(difficulty*6)-2   ,helix[1]);
 }
 
 
@@ -238,20 +259,21 @@ void outpt_animBoom(){
     }    
   }
 
-  for(i=0;i<20;i++){
-    if(mobilUnit_hostile[i].life==0 && mobilUnit_hostile[i].animBoom<12){
-      coordx=fnctn_lndscapeXpos(mobilUnit_hostile[i].x_world);
-      coordy=fnctn_lndscapeYpos(mobilUnit_hostile[i].y_world)-4;
-      switch(mobilUnit_hostile[i].sprite){
-        case 1: 
-        outpt_soundfx(1);
-        gb.display.drawBitmap(coordx+5    ,coordy-3  ,boom[mobilUnit_hostile[i].animBoom]);
-        break;
+  if(difficulty>0){
+    for(i=0;i<20;i++){
+      if(mobilUnit_hostile[i].life==0 && mobilUnit_hostile[i].animBoom<12){
+        coordx=fnctn_lndscapeXpos(mobilUnit_hostile[i].x_world);
+        coordy=fnctn_lndscapeYpos(mobilUnit_hostile[i].y_world)-4;
+        switch(mobilUnit_hostile[i].sprite){
+          case 1: 
+          outpt_soundfx(1);
+          gb.display.drawBitmap(coordx+5    ,coordy-3  ,boom[mobilUnit_hostile[i].animBoom]);
+          break;
+        }
       }
     }
   }
-  
- }
+}
 
 //##################################################################
 //##################################################################

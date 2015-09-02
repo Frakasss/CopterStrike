@@ -21,12 +21,15 @@ void fnctn_checkButtons() {
     case 1 :
       if(gb.buttons.pressed(BTN_RIGHT)){lvl=(lvl+1)%2;}
       if(gb.buttons.pressed(BTN_LEFT)) {if(lvl==0){lvl=1;}else{lvl=(lvl%2-1);}}
+      if(gb.buttons.pressed(BTN_DOWN)){difficulty=(difficulty+1)%3;}
+      if(gb.buttons.pressed(BTN_UP)) {if(difficulty==0){difficulty=2;}else{difficulty=(difficulty%3-1);}}
       if(gb.buttons.pressed(BTN_A))    {gameStatus = GAME;fnctn_initLevel(); }
+      if(gb.buttons.pressed(BTN_C)){gb.titleScreen(gamelogo);}
     break;
 
     case 2:
   
-      if(gb.buttons.pressed(BTN_C)){gb.titleScreen(gamelogo);}
+      if(gb.buttons.pressed(BTN_C)){gameStatus=SELECTMAP;}
     
       if(gb.buttons.pressed(BTN_B)){
         switch(player.moveMode){
@@ -71,7 +74,7 @@ void fnctn_checkButtons() {
         if(player.vSpeed>0){
           for(i=0;i<player.vSpeed;i++)      {if(player.y_world<LEVELHEIGHT){player.y_world++;}}
         }else if(player.vSpeed<0){
-          for(i=0;i<abs(player.vSpeed);i++) {if(player.y_world>5){player.y_world--;}}
+          for(i=0;i<abs(player.vSpeed);i++) {if(player.y_world>13){player.y_world--;}}
         }
     
         if(gb.buttons.repeat(BTN_A,0) && player.isLanding==0 && player.altitude == MAXALTITUDE){
@@ -131,6 +134,8 @@ void fnctn_initPlayer(){
 //##################################################################
 //##################################################################
 void fnctn_initLevel(){
+  destroyedBuildings=0;
+  money=0;
   switch(lvl){
     case 0:
     nbHeliport=5;
@@ -144,7 +149,7 @@ void fnctn_initLevel(){
     bkgrnd[4].x_world=46;   bkgrnd[4].y_world=567;  bkgrnd[4].width=13;  bkgrnd[4].height=7;
 
     //village
-    building_friend[0].x_world=33;      building_friend[0].y_world=69;
+    building_friend[0].x_world=33;      building_friend[0].y_world=72;
     building_friend[1].x_world=538;     building_friend[1].y_world=73;
     building_friend[2].x_world=16;      building_friend[2].y_world=580;
     for(i=0;i<3;i++){
@@ -211,46 +216,47 @@ void fnctn_initLevel(){
       building_hostile[i].fireTimer = 0;
     }
 
-
-    //mobile ennemies
-    mobilUnit_hostile[0].x_world=572; mobilUnit_hostile[0].y_world=123;   mobilUnit_hostile[0].batiment=1;
-    mobilUnit_hostile[1].x_world=309; mobilUnit_hostile[1].y_world=166;   mobilUnit_hostile[1].batiment=3;
-    mobilUnit_hostile[2].x_world=294; mobilUnit_hostile[2].y_world=191;   mobilUnit_hostile[2].batiment=3;
-    mobilUnit_hostile[3].x_world=586; mobilUnit_hostile[3].y_world=275;   mobilUnit_hostile[3].batiment=4;
-    mobilUnit_hostile[4].x_world=579; mobilUnit_hostile[4].y_world=300;   mobilUnit_hostile[4].batiment=4;
-    mobilUnit_hostile[5].x_world=366; mobilUnit_hostile[5].y_world=455;   mobilUnit_hostile[5].batiment=5;
-    mobilUnit_hostile[6].x_world=389; mobilUnit_hostile[6].y_world=483;   mobilUnit_hostile[6].batiment=5;
-    mobilUnit_hostile[7].x_world=617; mobilUnit_hostile[7].y_world=520;   mobilUnit_hostile[7].batiment=6;
-    mobilUnit_hostile[8].x_world=610; mobilUnit_hostile[8].y_world=541;   mobilUnit_hostile[8].batiment=6;
-    mobilUnit_hostile[9].x_world=550; mobilUnit_hostile[9].y_world=535;   mobilUnit_hostile[9].batiment=7;
-    mobilUnit_hostile[10].x_world=544; mobilUnit_hostile[10].y_world=558; mobilUnit_hostile[10].batiment=7;
-    mobilUnit_hostile[11].x_world=519; mobilUnit_hostile[11].y_world=592; mobilUnit_hostile[11].batiment=8;
-    mobilUnit_hostile[12].x_world=528; mobilUnit_hostile[12].y_world=603; mobilUnit_hostile[12].batiment=8;
-    mobilUnit_hostile[13].x_world=93;  mobilUnit_hostile[13].y_world=586; mobilUnit_hostile[13].batiment=2;
-    mobilUnit_hostile[14].x_world=345; mobilUnit_hostile[14].y_world=540; mobilUnit_hostile[14].batiment=2;
-    for(i=0;i<15;i++){
-      mobilUnit_hostile[i].width=6;  
-      mobilUnit_hostile[i].height=6;  
-      mobilUnit_hostile[i].sprite=0;  
-      mobilUnit_hostile[i].animBoom=0;  
-      mobilUnit_hostile[i].life=5;  
-      mobilUnit_hostile[i].fireTimer=0;  
-      mobilUnit_hostile[i].dir=1;  
-    }
-   
-    mobilUnit_hostile[15].x_world=379; mobilUnit_hostile[15].y_world=23;   mobilUnit_hostile[0].batiment=18;
-    mobilUnit_hostile[16].x_world=73;  mobilUnit_hostile[16].y_world=284;  mobilUnit_hostile[0].batiment=17;
-    mobilUnit_hostile[17].x_world=411; mobilUnit_hostile[17].y_world=398;  mobilUnit_hostile[0].batiment=19;
-    mobilUnit_hostile[18].x_world=279; mobilUnit_hostile[18].y_world=544;  mobilUnit_hostile[0].batiment=20;
-    mobilUnit_hostile[19].x_world=576; mobilUnit_hostile[19].y_world=531;  mobilUnit_hostile[0].batiment=20;
-    for(i=15;i<20;i++){
-      mobilUnit_hostile[i].width=16;  
-      mobilUnit_hostile[i].height=14;  
-      mobilUnit_hostile[i].sprite=1;  
-      mobilUnit_hostile[i].animBoom=0;  
-      mobilUnit_hostile[i].life=30;  
-      mobilUnit_hostile[i].fireTimer=0;  
-      mobilUnit_hostile[i].dir=4;  
+    if(difficulty>0){
+      //mobile ennemies
+      mobilUnit_hostile[0].x_world=572; mobilUnit_hostile[0].y_world=123;   mobilUnit_hostile[0].batiment=1;
+      mobilUnit_hostile[1].x_world=309; mobilUnit_hostile[1].y_world=166;   mobilUnit_hostile[1].batiment=3;
+      mobilUnit_hostile[2].x_world=294; mobilUnit_hostile[2].y_world=191;   mobilUnit_hostile[2].batiment=3;
+      mobilUnit_hostile[3].x_world=586; mobilUnit_hostile[3].y_world=275;   mobilUnit_hostile[3].batiment=4;
+      mobilUnit_hostile[4].x_world=579; mobilUnit_hostile[4].y_world=300;   mobilUnit_hostile[4].batiment=4;
+      mobilUnit_hostile[5].x_world=366; mobilUnit_hostile[5].y_world=455;   mobilUnit_hostile[5].batiment=5;
+      mobilUnit_hostile[6].x_world=389; mobilUnit_hostile[6].y_world=483;   mobilUnit_hostile[6].batiment=5;
+      mobilUnit_hostile[7].x_world=617; mobilUnit_hostile[7].y_world=520;   mobilUnit_hostile[7].batiment=6;
+      mobilUnit_hostile[8].x_world=610; mobilUnit_hostile[8].y_world=541;   mobilUnit_hostile[8].batiment=6;
+      mobilUnit_hostile[9].x_world=550; mobilUnit_hostile[9].y_world=535;   mobilUnit_hostile[9].batiment=7;
+      mobilUnit_hostile[10].x_world=544; mobilUnit_hostile[10].y_world=558; mobilUnit_hostile[10].batiment=7;
+      mobilUnit_hostile[11].x_world=519; mobilUnit_hostile[11].y_world=592; mobilUnit_hostile[11].batiment=8;
+      mobilUnit_hostile[12].x_world=528; mobilUnit_hostile[12].y_world=603; mobilUnit_hostile[12].batiment=8;
+      mobilUnit_hostile[13].x_world=93;  mobilUnit_hostile[13].y_world=586; mobilUnit_hostile[13].batiment=2;
+      mobilUnit_hostile[14].x_world=345; mobilUnit_hostile[14].y_world=540; mobilUnit_hostile[14].batiment=2;
+      for(i=0;i<15;i++){
+        mobilUnit_hostile[i].width=6;  
+        mobilUnit_hostile[i].height=6;  
+        mobilUnit_hostile[i].sprite=0;  
+        mobilUnit_hostile[i].animBoom=0;  
+        mobilUnit_hostile[i].life=5;  
+        mobilUnit_hostile[i].fireTimer=0;  
+        mobilUnit_hostile[i].dir=1;  
+      }
+     
+      mobilUnit_hostile[15].x_world=379; mobilUnit_hostile[15].y_world=23;   mobilUnit_hostile[0].batiment=18;
+      mobilUnit_hostile[16].x_world=73;  mobilUnit_hostile[16].y_world=284;  mobilUnit_hostile[0].batiment=17;
+      mobilUnit_hostile[17].x_world=411; mobilUnit_hostile[17].y_world=398;  mobilUnit_hostile[0].batiment=19;
+      mobilUnit_hostile[18].x_world=279; mobilUnit_hostile[18].y_world=544;  mobilUnit_hostile[0].batiment=20;
+      mobilUnit_hostile[19].x_world=576; mobilUnit_hostile[19].y_world=531;  mobilUnit_hostile[0].batiment=20;
+      for(i=15;i<20;i++){
+        mobilUnit_hostile[i].width=16;  
+        mobilUnit_hostile[i].height=14;  
+        mobilUnit_hostile[i].sprite=1;  
+        mobilUnit_hostile[i].animBoom=0;  
+        mobilUnit_hostile[i].life=30;  
+        mobilUnit_hostile[i].fireTimer=0;  
+        mobilUnit_hostile[i].dir=4;  
+      }
     }
   break;
 
@@ -334,46 +340,47 @@ void fnctn_initLevel(){
       building_hostile[i].fireTimer = 0;
     }
 
-
-    //mobile ennemies
-    mobilUnit_hostile[0].x_world=572; mobilUnit_hostile[0].y_world=123;   mobilUnit_hostile[0].batiment=1;
-    mobilUnit_hostile[1].x_world=309; mobilUnit_hostile[1].y_world=166;   mobilUnit_hostile[1].batiment=3;
-    mobilUnit_hostile[2].x_world=294; mobilUnit_hostile[2].y_world=191;   mobilUnit_hostile[2].batiment=3;
-    mobilUnit_hostile[3].x_world=586; mobilUnit_hostile[3].y_world=275;   mobilUnit_hostile[3].batiment=4;
-    mobilUnit_hostile[4].x_world=579; mobilUnit_hostile[4].y_world=300;   mobilUnit_hostile[4].batiment=4;
-    mobilUnit_hostile[5].x_world=366; mobilUnit_hostile[5].y_world=455;   mobilUnit_hostile[5].batiment=5;
-    mobilUnit_hostile[6].x_world=389; mobilUnit_hostile[6].y_world=483;   mobilUnit_hostile[6].batiment=5;
-    mobilUnit_hostile[7].x_world=617; mobilUnit_hostile[7].y_world=520;   mobilUnit_hostile[7].batiment=6;
-    mobilUnit_hostile[8].x_world=610; mobilUnit_hostile[8].y_world=541;   mobilUnit_hostile[8].batiment=6;
-    mobilUnit_hostile[9].x_world=550; mobilUnit_hostile[9].y_world=535;   mobilUnit_hostile[9].batiment=7;
-    mobilUnit_hostile[10].x_world=544; mobilUnit_hostile[10].y_world=558; mobilUnit_hostile[10].batiment=7;
-    mobilUnit_hostile[11].x_world=519; mobilUnit_hostile[11].y_world=592; mobilUnit_hostile[11].batiment=8;
-    mobilUnit_hostile[12].x_world=528; mobilUnit_hostile[12].y_world=603; mobilUnit_hostile[12].batiment=8;
-    mobilUnit_hostile[13].x_world=93;  mobilUnit_hostile[13].y_world=586; mobilUnit_hostile[13].batiment=2;
-    mobilUnit_hostile[14].x_world=345; mobilUnit_hostile[14].y_world=540; mobilUnit_hostile[14].batiment=2;
-    for(i=0;i<15;i++){
-      mobilUnit_hostile[i].width=6;  
-      mobilUnit_hostile[i].height=6;  
-      mobilUnit_hostile[i].sprite=0;  
-      mobilUnit_hostile[i].animBoom=0;  
-      mobilUnit_hostile[i].life=5;  
-      mobilUnit_hostile[i].fireTimer=0;  
-      mobilUnit_hostile[i].dir=1;  
-    }
-   
-    mobilUnit_hostile[15].x_world=379; mobilUnit_hostile[15].y_world=23;   mobilUnit_hostile[0].batiment=18;
-    mobilUnit_hostile[16].x_world=73;  mobilUnit_hostile[16].y_world=284;  mobilUnit_hostile[0].batiment=17;
-    mobilUnit_hostile[17].x_world=411; mobilUnit_hostile[17].y_world=398;  mobilUnit_hostile[0].batiment=19;
-    mobilUnit_hostile[18].x_world=279; mobilUnit_hostile[18].y_world=544;  mobilUnit_hostile[0].batiment=20;
-    mobilUnit_hostile[19].x_world=576; mobilUnit_hostile[19].y_world=531;  mobilUnit_hostile[0].batiment=20;
-    for(i=15;i<20;i++){
-      mobilUnit_hostile[i].width=16;  
-      mobilUnit_hostile[i].height=14;  
-      mobilUnit_hostile[i].sprite=1;  
-      mobilUnit_hostile[i].animBoom=0;  
-      mobilUnit_hostile[i].life=30;  
-      mobilUnit_hostile[i].fireTimer=0;  
-      mobilUnit_hostile[i].dir=4;  
+    if(difficulty>0){
+      //mobile ennemies
+      mobilUnit_hostile[0].x_world=572; mobilUnit_hostile[0].y_world=123;   mobilUnit_hostile[0].batiment=1;
+      mobilUnit_hostile[1].x_world=309; mobilUnit_hostile[1].y_world=166;   mobilUnit_hostile[1].batiment=3;
+      mobilUnit_hostile[2].x_world=294; mobilUnit_hostile[2].y_world=191;   mobilUnit_hostile[2].batiment=3;
+      mobilUnit_hostile[3].x_world=586; mobilUnit_hostile[3].y_world=275;   mobilUnit_hostile[3].batiment=4;
+      mobilUnit_hostile[4].x_world=579; mobilUnit_hostile[4].y_world=300;   mobilUnit_hostile[4].batiment=4;
+      mobilUnit_hostile[5].x_world=366; mobilUnit_hostile[5].y_world=455;   mobilUnit_hostile[5].batiment=5;
+      mobilUnit_hostile[6].x_world=389; mobilUnit_hostile[6].y_world=483;   mobilUnit_hostile[6].batiment=5;
+      mobilUnit_hostile[7].x_world=617; mobilUnit_hostile[7].y_world=520;   mobilUnit_hostile[7].batiment=6;
+      mobilUnit_hostile[8].x_world=610; mobilUnit_hostile[8].y_world=541;   mobilUnit_hostile[8].batiment=6;
+      mobilUnit_hostile[9].x_world=550; mobilUnit_hostile[9].y_world=535;   mobilUnit_hostile[9].batiment=7;
+      mobilUnit_hostile[10].x_world=544; mobilUnit_hostile[10].y_world=558; mobilUnit_hostile[10].batiment=7;
+      mobilUnit_hostile[11].x_world=519; mobilUnit_hostile[11].y_world=592; mobilUnit_hostile[11].batiment=8;
+      mobilUnit_hostile[12].x_world=528; mobilUnit_hostile[12].y_world=603; mobilUnit_hostile[12].batiment=8;
+      mobilUnit_hostile[13].x_world=93;  mobilUnit_hostile[13].y_world=586; mobilUnit_hostile[13].batiment=2;
+      mobilUnit_hostile[14].x_world=345; mobilUnit_hostile[14].y_world=540; mobilUnit_hostile[14].batiment=2;
+      for(i=0;i<15;i++){
+        mobilUnit_hostile[i].width=6;  
+        mobilUnit_hostile[i].height=6;  
+        mobilUnit_hostile[i].sprite=0;  
+        mobilUnit_hostile[i].animBoom=0;  
+        mobilUnit_hostile[i].life=5;  
+        mobilUnit_hostile[i].fireTimer=0;  
+        mobilUnit_hostile[i].dir=1;  
+      }
+     
+      mobilUnit_hostile[15].x_world=379; mobilUnit_hostile[15].y_world=23;   mobilUnit_hostile[0].batiment=18;
+      mobilUnit_hostile[16].x_world=73;  mobilUnit_hostile[16].y_world=284;  mobilUnit_hostile[0].batiment=17;
+      mobilUnit_hostile[17].x_world=411; mobilUnit_hostile[17].y_world=398;  mobilUnit_hostile[0].batiment=19;
+      mobilUnit_hostile[18].x_world=279; mobilUnit_hostile[18].y_world=544;  mobilUnit_hostile[0].batiment=20;
+      mobilUnit_hostile[19].x_world=576; mobilUnit_hostile[19].y_world=531;  mobilUnit_hostile[0].batiment=20;
+      for(i=15;i<20;i++){
+        mobilUnit_hostile[i].width=16;  
+        mobilUnit_hostile[i].height=14;  
+        mobilUnit_hostile[i].sprite=1;  
+        mobilUnit_hostile[i].animBoom=0;  
+        mobilUnit_hostile[i].life=30;  
+        mobilUnit_hostile[i].fireTimer=0;  
+        mobilUnit_hostile[i].dir=4;  
+      }
     }
   break;   
   }
@@ -480,36 +487,38 @@ void fnctn_initEnnemyFire(){
     }
   }
 
-  for(i=0;i<20;i++){
-    coordx = mobilUnit_hostile[i].x_world+ (mobilUnit_hostile[i].width/2);
-    coordy = mobilUnit_hostile[i].y_world+ (mobilUnit_hostile[i].height/2);
-    if(abs(player.x_world-coordx)<75 && abs(player.y_world-coordy)<75 && mobilUnit_hostile[i].fireTimer<1 && mobilUnit_hostile[i].life>0){
-      check01=0;
-      for(j=0;j<MAXBULLET;j++){
-        if(bullet[j].distance==0 && check01==0){
-          check01=1;
-          bullet[j].shooter=i;
-          bullet[j].x_world=coordx;
-          bullet[j].y_world=coordy;
-          bullet[j].distance=1;
-          switch (mobilUnit_hostile[i].sprite){
-            case 0: //unit
-              mobilUnit_hostile[i].fireTimer=TMPUNIT;
-              bullet[j].dir=0;
-              if(player.x_world>coordx+5 && player.y_world-player.altitude>coordy+5)                            {bullet[j].dir=1;}
-              if(player.x_world>coordx-6 && player.x_world<coordx+6 && player.y_world-player.altitude>coordy)   {bullet[j].dir=2;}
-              if(player.x_world<coordx-5 && player.y_world-player.altitude>coordy+5)                            {bullet[j].dir=3;}
-              if(player.x_world<coordx   && player.y_world-player.altitude>coordy-6 && player.y_world-player.altitude<coordy+6){bullet[j].dir=4;}
-              if(player.x_world<coordx-5 && player.y_world-player.altitude<coordy-5)                            {bullet[j].dir=5;}
-              if(player.x_world>coordx-6 && player.x_world<coordx+6 && player.y_world-player.altitude<coordy-6) {bullet[j].dir=6;}
-              if(player.x_world>coordx+5 && player.y_world-player.altitude<coordy-5)                            {bullet[j].dir=7;}
-            break;
-
-            case 1: //tank
-              mobilUnit_hostile[i].fireTimer=TMPTANK;
-              bullet[j].dir=mobilUnit_hostile[i].dir;
-              bullet[j].y_world=bullet[j].y_world-5;
-            break;
+  if(difficulty>0){
+    for(i=0;i<20;i++){
+      coordx = mobilUnit_hostile[i].x_world+ (mobilUnit_hostile[i].width/2);
+      coordy = mobilUnit_hostile[i].y_world+ (mobilUnit_hostile[i].height/2);
+      if(abs(player.x_world-coordx)<75 && abs(player.y_world-coordy)<75 && mobilUnit_hostile[i].fireTimer<1 && mobilUnit_hostile[i].life>0){
+        check01=0;
+        for(j=0;j<MAXBULLET;j++){
+          if(bullet[j].distance==0 && check01==0){
+            check01=1;
+            bullet[j].shooter=i;
+            bullet[j].x_world=coordx;
+            bullet[j].y_world=coordy;
+            bullet[j].distance=1;
+            switch (mobilUnit_hostile[i].sprite){
+              case 0: //unit
+                mobilUnit_hostile[i].fireTimer=TMPUNIT;
+                bullet[j].dir=0;
+                if(player.x_world>coordx+5 && player.y_world-player.altitude>coordy+5)                            {bullet[j].dir=1;}
+                if(player.x_world>coordx-6 && player.x_world<coordx+6 && player.y_world-player.altitude>coordy)   {bullet[j].dir=2;}
+                if(player.x_world<coordx-5 && player.y_world-player.altitude>coordy+5)                            {bullet[j].dir=3;}
+                if(player.x_world<coordx   && player.y_world-player.altitude>coordy-6 && player.y_world-player.altitude<coordy+6){bullet[j].dir=4;}
+                if(player.x_world<coordx-5 && player.y_world-player.altitude<coordy-5)                            {bullet[j].dir=5;}
+                if(player.x_world>coordx-6 && player.x_world<coordx+6 && player.y_world-player.altitude<coordy-6) {bullet[j].dir=6;}
+                if(player.x_world>coordx+5 && player.y_world-player.altitude<coordy-5)                            {bullet[j].dir=7;}
+              break;
+  
+              case 1: //tank
+                mobilUnit_hostile[i].fireTimer=TMPTANK;
+                bullet[j].dir=mobilUnit_hostile[i].dir;
+                bullet[j].y_world=bullet[j].y_world-5;
+              break;
+            }
           }
         }
       }
@@ -594,21 +603,49 @@ void fnctn_checkPlayerFire(){
     }
     for(i=0;i<nbBuilding_Hostile;i++){
       if(coordx>building_hostile[i].x_world && coordx<building_hostile[i].x_world+building_hostile[i].width && coordy>building_hostile[i].y_world && coordy<building_hostile[i].y_world+building_hostile[i].height){
-        if(building_hostile[i].life>0){building_hostile[i].life--;}
+        if(building_hostile[i].life>0){
+          building_hostile[i].life--;
+          if(building_hostile[i].life==0 && building_hostile[i].animBoom==0){
+            destroyedBuildings = destroyedBuildings+1;
+            switch(building_hostile[i].sprite){
+              case 8: money = money + 250; break;  //tour
+              case 6: money = money + 1000; break; //bunker
+            }
+          }
+        }
       }
     }
     for(i=0;i<nbBuilding_Friend;i++){
       if(coordx>building_friend[i].x_world && coordx<building_friend[i].x_world+building_friend[i].width && coordy>building_friend[i].y_world && coordy<building_friend[i].y_world+building_friend[i].height){
-        if(building_friend[i].life>0){building_friend[i].life--;}
+        if(building_friend[i].life>0){
+          building_friend[i].life--;
+          if(building_friend[i].life==0 && difficulty==2 && building_friend[i].animBoom==0){
+            switch(building_friend[i].sprite){
+               case 4: money = money + 200; break; //village
+               case 7: money = money + 350; break; //camp
+               case 9: money = money + 200; break; //village
+            }
+          }
+        }
       }
     }
-    for(i=0;i<20;i++){
-      if(coordx>mobilUnit_hostile[i].x_world && coordx<mobilUnit_hostile[i].x_world+mobilUnit_hostile[i].width && coordy>mobilUnit_hostile[i].y_world && coordy<mobilUnit_hostile[i].y_world+mobilUnit_hostile[i].height){
-        if(mobilUnit_hostile[i].life>0){mobilUnit_hostile[i].life--;}
+
+    if(difficulty>0){
+      for(i=0;i<20;i++){
+        if(coordx>mobilUnit_hostile[i].x_world && coordx<mobilUnit_hostile[i].x_world+mobilUnit_hostile[i].width && coordy>mobilUnit_hostile[i].y_world && coordy<mobilUnit_hostile[i].y_world+mobilUnit_hostile[i].height){
+          if(mobilUnit_hostile[i].life>0){
+            mobilUnit_hostile[i].life--;
+            if(mobilUnit_hostile[i].life==0 && difficulty==1 && mobilUnit_hostile[i].animBoom==0){
+            switch(building_friend[i].sprite){
+               case 0: money = money + 50; break;  //unit
+               case 1: money = money + 100; break; //tank
+            }
+          }
+          
+          }
+        }
       }
-    }
-    
-    
+    }    
   }
 }
 
@@ -630,12 +667,40 @@ void fnctn_checkLanding(){
           }
         }
       break;
+      
+      case 1:
+        for(i=0;i<nbHeliport;i++){
+          if(player.x_world>bkgrnd[i].x_world   && player.x_world<bkgrnd[i].x_world+bkgrnd[i].width     && player.y_world>bkgrnd[i].y_world     && player.y_world<bkgrnd[i].y_world+bkgrnd[i].height){
+            switch(i){
+              case 0: if(player.life<MAXLIFE-1 || player.fuel<MAXFUEL-1){player.isLanding=1;} break;
+              case 1: if(player.life<MAXLIFE-1){player.isLanding=1;} break;
+              case 2: if(player.fuel<MAXFUEL-1){player.isLanding=1;} break;
+              case 3: if(player.life<MAXLIFE-1){player.isLanding=1;} break;
+              case 4: if(player.fuel<MAXFUEL-1){player.isLanding=1;} break;
+            }
+          }
+        }
+      break;
     }
   }
 
   if(player.isLanding==1 && player.altitude==0){
     switch(lvl){
       case 0:
+        for(i=0;i<nbHeliport;i++){
+          if(player.x_world>bkgrnd[i].x_world   && player.x_world<bkgrnd[i].x_world+bkgrnd[i].width     && player.y_world>bkgrnd[i].y_world     && player.y_world<bkgrnd[i].y_world+bkgrnd[i].height){
+            switch(i){
+              case 0: if(player.life==MAXLIFE && player.fuel==MAXFUEL){player.isLanding=0;}else{if(player.life<MAXLIFE){player.life++;} if(player.fuel<MAXFUEL){player.fuel++;}} break;
+              case 1: if(player.life==MAXLIFE){player.isLanding=0;}else{if(player.life<MAXLIFE){player.life++;}} break;
+              case 2: if(player.fuel==MAXFUEL){player.isLanding=0;}else{if(player.fuel<MAXFUEL){player.fuel++;}} break;
+              case 3: if(player.life==MAXLIFE){player.isLanding=0;}else{if(player.life<MAXLIFE){player.life++;}} break;
+              case 4: if(player.fuel==MAXFUEL){player.isLanding=0;}else{if(player.fuel<MAXFUEL){player.fuel++;}} break;
+            }
+          }
+        }
+      break;
+
+      case 1:
         for(i=0;i<nbHeliport;i++){
           if(player.x_world>bkgrnd[i].x_world   && player.x_world<bkgrnd[i].x_world+bkgrnd[i].width     && player.y_world>bkgrnd[i].y_world     && player.y_world<bkgrnd[i].y_world+bkgrnd[i].height){
             switch(i){
@@ -731,11 +796,12 @@ void fnctn_animation(){
     if(building_friend[i].life == 0 && building_friend[i].animBoom<12){building_friend[i].animBoom++;}
   }
 
-  for(i=0;i<20;i++){
-    if(mobilUnit_hostile[i].life == 0 && mobilUnit_hostile[i].animBoom<TMPRESURECTION+1){mobilUnit_hostile[i].animBoom++;}
-    if(mobilUnit_hostile[i].fireTimer>0){mobilUnit_hostile[i].fireTimer--;}
+  if(difficulty>0){
+    for(i=0;i<20;i++){
+      if(mobilUnit_hostile[i].life == 0 && mobilUnit_hostile[i].animBoom<TMPRESURECTION+1){mobilUnit_hostile[i].animBoom++;}
+      if(mobilUnit_hostile[i].fireTimer>0){mobilUnit_hostile[i].fireTimer--;}
+    }
   }
-  
 }
 
 
