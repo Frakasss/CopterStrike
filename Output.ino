@@ -137,10 +137,7 @@ void outpt_drawEnnemyFire(){
       if(bullet[i].distance==1){outpt_soundfx(0);}
       coordx = fnctn_lndscapeXpos(bullet[i].x_world);
       coordy = fnctn_lndscapeYpos(bullet[i].y_world);
-      gb.display.drawPixel(coordx,coordy);
-      gb.display.drawPixel(coordx+1,coordy);
-      gb.display.drawPixel(coordx+1,coordy+1);
-      gb.display.drawPixel(coordx,coordy+1);
+      gb.display.fillRect(coordx,coordy,1,1);
     }
   }
 }
@@ -154,22 +151,27 @@ void outpt_drawHUD(){
   gb.display.setColor(WHITE);
   gb.display.fillRect(0,0,84,5);
   gb.display.setColor(BLACK);
-  gb.display.drawBitmap(42,1,HUD);
 
-  switch(player.moveMode){
-    case 0: gb.display.print("$");gb.display.print(money); break;
-    case 1: gb.display.print(destroyedBuildings);gb.display.print("/");gb.display.print(nbBuilding_Hostile); break;
-  }
+
+  if(destroyedBuildings==nbBuilding_Hostile && cptAnim<15 && player.altitude>0){
+    gb.display.print("    Return to base.");
+  }else{
+    gb.display.drawBitmap(42,1,HUD);
+    switch(player.moveMode){
+      case 0: gb.display.print("$");gb.display.print(money); break;
+      case 1: gb.display.print(destroyedBuildings);gb.display.print("/");gb.display.print(nbBuilding_Hostile); break;
+    }
+    
+    gb.display.fillRect(49,2,player.life/(MAXLIFE/10),2); //life
+    gb.display.fillRect(66,2,player.fuel/(MAXFUEL/10),2); //fuel
   
-  gb.display.fillRect(49,2,player.life/(MAXLIFE/10),2); //life
-  gb.display.fillRect(66,2,player.fuel/(MAXFUEL/10),2); //fuel
-
-
-  gb.display.cursorX = 79;
-  gb.display.cursorY = 0;
-  switch(player.moveMode){
-    case 0: gb.display.print("@  "); break;
-    case 1: gb.display.print("-  "); break;
+  
+    gb.display.cursorX = 79;
+    gb.display.cursorY = 0;
+    switch(player.moveMode){
+      case 0: gb.display.print("@  "); break;
+      case 1: gb.display.print("-  "); break;
+    }
   }
 }
 
@@ -188,7 +190,9 @@ void outpt_menu(){
   gb.display.drawBitmap(12,9,spriteBkg[1]);
 
   gb.display.drawRect(50,7,30,19);
-  //gb.display.drawBitmap(33,16,tree03);
+  gb.display.drawBitmap(52,9,spriteBkg[9]);
+  gb.display.drawBitmap(58,15,spriteBkg[5]);
+  gb.display.drawBitmap(68,9,spriteBkg[6]);
 
   gb.display.drawRect(9+(lvl*40),6,32,21);
   
@@ -220,9 +224,8 @@ void outpt_animBoom(){
   for(i=0;i<nbBuilding_Hostile;i++){
     if(building_hostile[i].life==0 && building_hostile[i].animBoom<12){
       outpt_soundfx(1);
-      coordx=fnctn_lndscapeXpos(building_hostile[i].x_world)+building_hostile[i].width-4;
-      coordy=fnctn_lndscapeYpos(building_hostile[i].y_world)+building_hostile[i].height-6;
-      gb.display.drawBitmap(coordx,coordy,boom[building_hostile[i].animBoom]);
+      coordx=fnctn_lndscapeXpos(building_hostile[i].x_world);
+      coordy=fnctn_lndscapeYpos(building_hostile[i].y_world)-4;
       switch(building_hostile[i].sprite){
         case 4: 
         gb.display.drawBitmap(coordx+2    ,coordy+15  ,boom[building_hostile[i].animBoom]);
@@ -234,6 +237,10 @@ void outpt_animBoom(){
         gb.display.drawBitmap(coordx+57   ,coordy+2   ,boom[building_hostile[i].animBoom]);
         gb.display.drawBitmap(coordx+63   ,coordy+26  ,boom[building_hostile[i].animBoom]);
         break;
+        
+        default:
+        gb.display.drawBitmap(coordx,coordy,boom[building_hostile[i].animBoom]);
+        break;
       }
     }    
   }
@@ -241,9 +248,8 @@ void outpt_animBoom(){
   for(i=0;i<nbBuilding_Friend;i++){
     if(building_friend[i].life==0 && building_friend[i].animBoom<12){
       outpt_soundfx(1);
-      coordx=fnctn_lndscapeXpos(building_hostile[i].x_world)+building_hostile[i].width-4;
-      coordy=fnctn_lndscapeYpos(building_hostile[i].y_world)+building_hostile[i].height-6;
-      gb.display.drawBitmap(coordx,coordy,boom[building_friend[i].animBoom]);
+      coordx=fnctn_lndscapeXpos(building_friend[i].x_world);
+      coordy=fnctn_lndscapeYpos(building_friend[i].y_world)-4;
       switch(building_friend[i].sprite){
         case 4: 
         gb.display.drawBitmap(coordx+2    ,coordy+15  ,boom[building_friend[i].animBoom]);
@@ -264,6 +270,9 @@ void outpt_animBoom(){
         gb.display.drawBitmap(coordx+46   ,coordy+21  ,boom[building_friend[i].animBoom]);
         gb.display.drawBitmap(coordx+57   ,coordy+2   ,boom[building_friend[i].animBoom]);
         gb.display.drawBitmap(coordx+63   ,coordy+26  ,boom[building_friend[i].animBoom]);
+        break;
+        default:
+        gb.display.drawBitmap(coordx,coordy,boom[building_friend[i].animBoom]);
         break;
       }
     }    
@@ -288,62 +297,8 @@ void outpt_animBoom(){
 //##################################################################
 //##################################################################
 void outpt_drawBackground(){ 
-    switch(lvl){
-    case 0:
-    for(i=0;i<19;i++){
-      coordx=fnctn_backgrndXpos(bkg[i].x_world);   coordy=fnctn_backgrndYpos(bkg[i].y_world);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[bkg[i].sprite]);
-    }
-    /*
-    coordx=fnctn_backgrndXpos(22);   coordy=fnctn_backgrndYpos(16);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[3]);
-    coordx=fnctn_backgrndXpos(30);   coordy=fnctn_backgrndYpos(21);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[3]);
-    coordx=fnctn_backgrndXpos(22);   coordy=fnctn_backgrndYpos(26);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[3]);
-    coordx=fnctn_backgrndXpos(77);   coordy=fnctn_backgrndYpos(11);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[3]);
-    coordx=fnctn_backgrndXpos(43);   coordy=fnctn_backgrndYpos(45);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[3]);
-    coordx=fnctn_backgrndXpos(82);   coordy=fnctn_backgrndYpos(48);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[3]);
-    coordx=fnctn_backgrndXpos(27);   coordy=fnctn_backgrndYpos(81);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[3]);
-    coordx=fnctn_backgrndXpos(36);   coordy=fnctn_backgrndYpos(85);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[3]);
-    coordx=fnctn_backgrndXpos(28);   coordy=fnctn_backgrndYpos(91);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[3]);
-    coordx=fnctn_backgrndXpos(103);  coordy=fnctn_backgrndYpos(116);   gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[3]);
-
-    coordx=fnctn_backgrndXpos(64);   coordy=fnctn_backgrndYpos(30);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[0]);
-    coordx=fnctn_backgrndXpos(14);   coordy=fnctn_backgrndYpos(64);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[0]);
-    coordx=fnctn_backgrndXpos(53);   coordy=fnctn_backgrndYpos(119);   gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[0]);
-    coordx=fnctn_backgrndXpos(4);    coordy=fnctn_backgrndYpos(3);     gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[1]);
-    coordx=fnctn_backgrndXpos(89);   coordy=fnctn_backgrndYpos(73);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[1]);
-    coordx=fnctn_backgrndXpos(98);   coordy=fnctn_backgrndYpos(80);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[1]);
-    coordx=fnctn_backgrndXpos(84);   coordy=fnctn_backgrndYpos(84);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[5]);
-    coordx=fnctn_backgrndXpos(7);    coordy=fnctn_backgrndYpos(109);   gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[4]);
-    coordx=fnctn_backgrndXpos(110);  coordy=fnctn_backgrndYpos(26);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[4]);
-    */
-    break;
-
-    case 1:
-    for(i=0;i<19;i++){
-      coordx=fnctn_backgrndXpos(bkg[i].x_world);   coordy=fnctn_backgrndYpos(bkg[i].y_world);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[bkg[i].sprite]);
-    }
-    /*
-    coordx=fnctn_backgrndXpos(22);   coordy=fnctn_backgrndYpos(16);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[3]);
-    coordx=fnctn_backgrndXpos(30);   coordy=fnctn_backgrndYpos(21);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[3]);
-    coordx=fnctn_backgrndXpos(22);   coordy=fnctn_backgrndYpos(26);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[3]);
-    coordx=fnctn_backgrndXpos(77);   coordy=fnctn_backgrndYpos(11);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[3]);
-    coordx=fnctn_backgrndXpos(43);   coordy=fnctn_backgrndYpos(45);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[3]);
-    coordx=fnctn_backgrndXpos(82);   coordy=fnctn_backgrndYpos(48);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[3]);
-    coordx=fnctn_backgrndXpos(27);   coordy=fnctn_backgrndYpos(81);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[3]);
-    coordx=fnctn_backgrndXpos(36);   coordy=fnctn_backgrndYpos(85);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[3]);
-    coordx=fnctn_backgrndXpos(28);   coordy=fnctn_backgrndYpos(91);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[3]);
-    coordx=fnctn_backgrndXpos(103);  coordy=fnctn_backgrndYpos(116);   gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[3]);
-
-    coordx=fnctn_backgrndXpos(64);   coordy=fnctn_backgrndYpos(30);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[0]);
-    coordx=fnctn_backgrndXpos(14);   coordy=fnctn_backgrndYpos(64);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[0]);
-    coordx=fnctn_backgrndXpos(53);   coordy=fnctn_backgrndYpos(119);   gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[0]);
-    coordx=fnctn_backgrndXpos(4);    coordy=fnctn_backgrndYpos(3);     gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[1]);
-    coordx=fnctn_backgrndXpos(89);   coordy=fnctn_backgrndYpos(73);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[1]);
-    coordx=fnctn_backgrndXpos(98);   coordy=fnctn_backgrndYpos(80);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[1]);
-    coordx=fnctn_backgrndXpos(84);   coordy=fnctn_backgrndYpos(84);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[5]);
-    coordx=fnctn_backgrndXpos(7);    coordy=fnctn_backgrndYpos(109);   gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[4]);
-    coordx=fnctn_backgrndXpos(110);  coordy=fnctn_backgrndYpos(26);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[4]);
-    */
-    break;
+  for(i=0;i<19;i++){
+    coordx=fnctn_backgrndXpos(bkg[i].x_world);   coordy=fnctn_backgrndYpos(bkg[i].y_world);    gb.display.drawBitmap(coordx-20   ,coordy-20  ,spriteBkg[bkg[i].sprite]);
   }
 }
 
@@ -477,8 +432,27 @@ void outpt_GameOver(){
     gb.display.cursorY = 19;
     gb.display.print("Game Over");
   }
+}
 
-  
+//##################################################################
+//##################################################################
+void outpt_Congratulation(){
+    gb.display.setColor(WHITE);
+    gb.display.fillRect(4,4,76,15);
+    gb.display.setColor(BLACK);
+    gb.display.drawRect(3,3,74,17);
+    gb.display.cursorX = 9;
+    gb.display.cursorY = 5;
+    gb.display.print("Mission Complete");
+    if(money<10){gb.display.cursorX = 40;}
+    if(money>=10){gb.display.cursorX = 35;}
+    if(money>=100){gb.display.cursorX = 31;}
+    if(money>=1000){gb.display.cursorX = 27;}
+    if(money>=10000){gb.display.cursorX = 23;}
+    if(money>=100000){gb.display.cursorX = 19;}
+    gb.display.cursorY = 12;
+    gb.display.print("$");
+    gb.display.print(money);
 }
 
 

@@ -33,6 +33,7 @@ extern const byte helix[4][8];
 extern const byte impact[3][10];
 extern const byte boom[12][14];
 
+
 extern const byte copterShadow[];
 extern const byte copterProfile[];
 extern const byte copterProfile_mask[];
@@ -46,13 +47,14 @@ extern const byte copterUpDown_mask[];
 
 extern const byte Ennemy_Unit[];
 
+
 extern const byte* sprites[];
 extern const byte* destroy[];
 extern const byte* tank[];
 extern const byte* spriteBkg[];
 
 //Sounds
-extern const byte soundfx[6][8];
+extern const byte soundfx[2][8];
 
 //Struct
 typedef struct{
@@ -61,7 +63,6 @@ typedef struct{
   char dir;
   char vSpeed;
   char hSpeed;
-  byte maxSpeed;
   byte altitude;
   byte isLanding;
   byte fire;
@@ -133,8 +134,8 @@ typedef struct{
 Player        player;
 Friend        bkgrnd[5];
 Bkgrnd        bkg[19];
-Object        building_friend[15];
-Hostile       building_hostile[30];
+Object        building_friend[9];
+Hostile       building_hostile[21];
 HostileMobile mobilUnit_hostile[20];
 Bullet        bullet[MAXBULLET];
 

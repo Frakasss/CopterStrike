@@ -47,18 +47,18 @@ void fnctn_checkButtons() {
     
       if(player.isLanding==0 && player.life>0){
         if(gb.buttons.repeat(BTN_RIGHT,0)){
-          if(player.hSpeed<player.maxSpeed){player.hSpeed++;}
+          if(player.hSpeed<3){player.hSpeed++;}
         }else if(gb.buttons.repeat(BTN_LEFT,0)){
-          if(player.hSpeed>-player.maxSpeed){player.hSpeed--;}
+          if(player.hSpeed>-3){player.hSpeed--;}
         }else{
           if(player.hSpeed>0)     {player.hSpeed--;}
           else if(player.hSpeed<0){player.hSpeed++;}
         }
           
         if(gb.buttons.repeat(BTN_DOWN,0)){
-          if(player.vSpeed<player.maxSpeed){player.vSpeed++;}
+          if(player.vSpeed<3){player.vSpeed++;}
         }else if(gb.buttons.repeat(BTN_UP,0)){
-          if(player.vSpeed>-player.maxSpeed){player.vSpeed--;}
+          if(player.vSpeed>-3){player.vSpeed--;}
         }else{
           if(player.vSpeed>0)     {player.vSpeed--;}
           else if(player.vSpeed<0){player.vSpeed++;}
@@ -101,14 +101,23 @@ void fnctn_checkButtons() {
 //##################################################################
 //##################################################################
 void fnctn_initPlayer(){
-  player.x_world=65;
-  player.y_world=43;
+  switch(lvl){
+    case 0:
+    player.x_world=65;
+    player.y_world=43;
+    break;
+
+    case 1:
+    player.x_world=65;
+    player.y_world=43;
+    break;
+  }
+
   player.altitude=0;
   player.dir=0;
   
   player.hSpeed = 0;
   player.vSpeed = 0;
-  player.maxSpeed = 3;
   
   player.isLanding=1;
   player.isCrashing=0;
@@ -141,7 +150,7 @@ void fnctn_initLevel(){
     case 0:
     nbHeliport=5;
     nbBuilding_Friend=9;
-    nbBuilding_Hostile = 21;
+    nbBuilding_Hostile = 2;
     
     bkgrnd[0].x_world=60;   bkgrnd[0].y_world=40;   bkgrnd[0].width=13;  bkgrnd[0].height=7;
     bkgrnd[1].x_world=593;  bkgrnd[1].y_world=57;   bkgrnd[1].width=13;  bkgrnd[1].height=7;
@@ -170,7 +179,7 @@ void fnctn_initLevel(){
     bkg[18].x_world=110; bkg[18].y_world=26;  bkg[18].sprite=4;
     
     //village
-    building_friend[0].x_world=33;      building_friend[0].y_world=72;
+    building_friend[0].x_world=31;      building_friend[0].y_world=72;
     building_friend[1].x_world=538;     building_friend[1].y_world=73;
     building_friend[2].x_world=16;      building_friend[2].y_world=580;
     for(i=0;i<3;i++){
@@ -732,12 +741,17 @@ void fnctn_checkLanding(){
           if(player.x_world>bkgrnd[i].x_world   && player.x_world<bkgrnd[i].x_world+bkgrnd[i].width     && player.y_world>bkgrnd[i].y_world     && player.y_world<bkgrnd[i].y_world+bkgrnd[i].height){
             switch(i){
               case 0: 
-              if(player.life==MAXLIFE && player.fuel==MAXFUEL){player.isLanding=0;}
-              else{
-                if(player.life<MAXLIFE){player.life++;} if(player.fuel<MAXFUEL){player.fuel++;} 
-                if(player.life==MAXLIFE && player.fuel==MAXFUEL){
-                  if(money<1000){money = 0;}else{money = money-1000;}
+              if(destroyedBuildings==nbBuilding_Hostile){
+                outpt_Congratulation();
+              }else{             
+                if(player.life==MAXLIFE && player.fuel==MAXFUEL){player.isLanding=0;}
+                else{
+                  if(player.life<MAXLIFE){player.life++;} if(player.fuel<MAXFUEL){player.fuel++;} 
+                  if(player.life==MAXLIFE && player.fuel==MAXFUEL){
+                    if(money<1000){money = 0;}else{money = money-800;}
+                  }
                 }
+              
               } break;
               
               case 1: 
@@ -754,7 +768,7 @@ void fnctn_checkLanding(){
               else{
                 if(player.fuel<MAXFUEL){player.fuel++;}
                 if(player.fuel==MAXFUEL){
-                  if(money<750){money = 0;}else{money = money-750;}
+                  if(money<750){money = 0;}else{money = money-150;}
                 }
               } break;
               
@@ -772,7 +786,7 @@ void fnctn_checkLanding(){
               else{
                 if(player.fuel<MAXFUEL){player.fuel++;}
                 if(player.fuel==MAXFUEL){
-                  if(money<750){money = 0;}else{money = money-750;}
+                  if(money<750){money = 0;}else{money = money-150;}
                 }
               } break;
             }
