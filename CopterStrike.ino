@@ -42,20 +42,14 @@ extern const byte copterDiag2[];
 extern const byte copterDiag2_mask[];
 extern const byte copterDown[];
 extern const byte copterUp[];
-extern const byte copterUp[];
 extern const byte copterUpDown_mask[];
-
-extern const byte Desert_sand[];
-extern const byte Desert_bush[];
-extern const byte Desert_cactus[];
-extern const byte Desert_tree[];
-extern const byte Desert_rock[];
 
 extern const byte Ennemy_Unit[];
 
 extern const byte* sprites[];
 extern const byte* destroy[];
 extern const byte* tank[];
+extern const byte* spriteBkg[];
 
 //Sounds
 extern const byte soundfx[6][8];
@@ -130,12 +124,20 @@ typedef struct{
   byte height;
 } Friend;
 
+typedef struct{
+  int x_world;
+  int y_world;
+  byte sprite;
+} Bkgrnd;
+
 Player        player;
 Friend        bkgrnd[5];
+Bkgrnd        bkg[19];
 Object        building_friend[15];
 Hostile       building_hostile[30];
 HostileMobile mobilUnit_hostile[20];
 Bullet        bullet[MAXBULLET];
+
 
 //Global Variables
 byte i;
@@ -155,7 +157,6 @@ byte height;
 byte nbHeliport;
 byte nbBuilding_Hostile;
 byte nbBuilding_Friend;
-
 
 
 //#####################################################
@@ -209,6 +210,9 @@ void loop() {
         
         //draw animBoom
         outpt_animBoom();
+
+        //outpt_GameOver
+        outpt_GameOver();
 
         
         //checks
