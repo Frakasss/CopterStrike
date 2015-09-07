@@ -47,14 +47,10 @@ extern const byte copterUpDown_mask[];
 
 extern const byte Ennemy_Unit[];
 
-
 extern const byte* sprites[];
 extern const byte* destroy[];
 extern const byte* tank[];
 extern const byte* spriteBkg[];
-
-//Sounds
-extern const byte soundfx[2][8];
 
 //Struct
 typedef struct{
@@ -123,6 +119,7 @@ typedef struct{
   int y_world;
   byte width;
   byte height;
+  byte sprite;
 } Friend;
 
 typedef struct{
@@ -132,7 +129,7 @@ typedef struct{
 } Bkgrnd;
 
 Player        player;
-Friend        bkgrnd[5];
+Friend        bkgrnd[15];
 Bkgrnd        bkg[19];
 Object        building_friend[9];
 Hostile       building_hostile[21];
@@ -169,7 +166,6 @@ void setup() {
   difficulty=0;
   money=0;
   cptAnim=0;
-  fnctn_initPlayer();
   gb.titleScreen(gamelogo);
   gb.battery.show=false;
 }

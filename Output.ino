@@ -128,7 +128,6 @@ void outpt_drawPlayerFire(){
 }
 
 
-
 //##################################################################
 //##################################################################
 void outpt_drawEnnemyFire(){
@@ -137,13 +136,11 @@ void outpt_drawEnnemyFire(){
       if(bullet[i].distance==1){outpt_soundfx(0);}
       coordx = fnctn_lndscapeXpos(bullet[i].x_world);
       coordy = fnctn_lndscapeYpos(bullet[i].y_world);
-      gb.display.fillRect(coordx,coordy,1,1);
+      if(coordx>0 && coordx<SCREENWIDTH && coordy>0 && coordy<SCREENHEIGHT){gb.display.fillRect(coordx,coordy,2,2);}
+      
     }
   }
 }
-
-
-
 
 //##################################################################
 //##################################################################
@@ -190,7 +187,7 @@ void outpt_menu(){
   gb.display.drawBitmap(12,9,spriteBkg[1]);
 
   gb.display.drawRect(50,7,30,19);
-  gb.display.drawBitmap(52,9,spriteBkg[9]);
+  gb.display.drawBitmap(52,9,spriteBkg[7]);
   gb.display.drawBitmap(58,15,spriteBkg[5]);
   gb.display.drawBitmap(68,9,spriteBkg[6]);
 
@@ -227,6 +224,7 @@ void outpt_animBoom(){
       coordx=fnctn_lndscapeXpos(building_hostile[i].x_world);
       coordy=fnctn_lndscapeYpos(building_hostile[i].y_world)-4;
       switch(building_hostile[i].sprite){
+        /*
         case 4: 
         gb.display.drawBitmap(coordx+2    ,coordy+15  ,boom[building_hostile[i].animBoom]);
         gb.display.drawBitmap(coordx+10   ,coordy+1   ,boom[building_hostile[i].animBoom]);
@@ -237,7 +235,7 @@ void outpt_animBoom(){
         gb.display.drawBitmap(coordx+57   ,coordy+2   ,boom[building_hostile[i].animBoom]);
         gb.display.drawBitmap(coordx+63   ,coordy+26  ,boom[building_hostile[i].animBoom]);
         break;
-        
+        */
         default:
         gb.display.drawBitmap(coordx,coordy,boom[building_hostile[i].animBoom]);
         break;
@@ -251,6 +249,7 @@ void outpt_animBoom(){
       coordx=fnctn_lndscapeXpos(building_friend[i].x_world);
       coordy=fnctn_lndscapeYpos(building_friend[i].y_world)-4;
       switch(building_friend[i].sprite){
+        /*
         case 4: 
         gb.display.drawBitmap(coordx+2    ,coordy+15  ,boom[building_friend[i].animBoom]);
         gb.display.drawBitmap(coordx+10   ,coordy+1   ,boom[building_friend[i].animBoom]);
@@ -271,6 +270,7 @@ void outpt_animBoom(){
         gb.display.drawBitmap(coordx+57   ,coordy+2   ,boom[building_friend[i].animBoom]);
         gb.display.drawBitmap(coordx+63   ,coordy+26  ,boom[building_friend[i].animBoom]);
         break;
+        */
         default:
         gb.display.drawBitmap(coordx,coordy,boom[building_friend[i].animBoom]);
         break;
@@ -305,48 +305,12 @@ void outpt_drawBackground(){
 //##################################################################
 //##################################################################
 void outpt_drawbaseCamps(){
-   switch(lvl){
-   case 0:
-    coordx=fnctn_lndscapeXpos(57);    coordy=fnctn_lndscapeYpos(19);    width=19;  height=15;  if(coordx<SCREENWIDTH  && coordx>0-width   && coordy<SCREENHEIGHT    && coordy>0-height){gb.display.drawBitmap(coordx   ,coordy  ,sprites[1]);} //basecamp
-    coordx=fnctn_lndscapeXpos(24);    coordy=fnctn_lndscapeYpos(27);    width=32;  height=29;  if(coordx<SCREENWIDTH  && coordx>0-width   && coordy<SCREENHEIGHT    && coordy>0-height){gb.display.drawBitmap(coordx   ,coordy  ,sprites[2]);} //fuel
-    coordx=fnctn_lndscapeXpos(10);    coordy=fnctn_lndscapeYpos(550);   width=32;  height=29;  if(coordx<SCREENWIDTH  && coordx>0-width   && coordy<SCREENHEIGHT    && coordy>0-height){gb.display.drawBitmap(coordx   ,coordy  ,sprites[2]);} //fuel
-    coordx=fnctn_lndscapeXpos(385);   coordy=fnctn_lndscapeYpos(103);   width=32;  height=29;  if(coordx<SCREENWIDTH  && coordx>0-width   && coordy<SCREENHEIGHT    && coordy>0-height){gb.display.drawBitmap(coordx   ,coordy  ,sprites[2]);} //fuel
-    coordx=fnctn_lndscapeXpos(77);    coordy=fnctn_lndscapeYpos(33);    width=25;  height=26;  if(coordx<SCREENWIDTH  && coordx>0-width   && coordy<SCREENHEIGHT    && coordy>0-height){gb.display.drawBitmap(coordx   ,coordy  ,sprites[3]);} //garage
-    coordx=fnctn_lndscapeXpos(589);   coordy=fnctn_lndscapeYpos(26);    width=25;  height=26;  if(coordx<SCREENWIDTH  && coordx>0-width   && coordy<SCREENHEIGHT    && coordy>0-height){gb.display.drawBitmap(coordx   ,coordy  ,sprites[3]);} //garage
-    coordx=fnctn_lndscapeXpos(274);   coordy=fnctn_lndscapeYpos(287);   width=25;  height=26;  if(coordx<SCREENWIDTH  && coordx>0-width   && coordy<SCREENHEIGHT    && coordy>0-height){gb.display.drawBitmap(coordx   ,coordy  ,sprites[3]);} //garage
-    coordx=fnctn_lndscapeXpos(253);   coordy=fnctn_lndscapeYpos(159);   width=36;  height=24;  if(coordx<SCREENWIDTH  && coordx>0-width   && coordy<SCREENHEIGHT    && coordy>0-height){gb.display.drawBitmap(coordx   ,coordy  ,sprites[9]);} //oasis
-    coordx=fnctn_lndscapeXpos(152);   coordy=fnctn_lndscapeYpos(414);   width=36;  height=24;  if(coordx<SCREENWIDTH  && coordx>0-width   && coordy<SCREENHEIGHT    && coordy>0-height){gb.display.drawBitmap(coordx   ,coordy  ,sprites[9]);} //oasis
-    coordx=fnctn_lndscapeXpos(526);   coordy=fnctn_lndscapeYpos(284);   width=36;  height=24;  if(coordx<SCREENWIDTH  && coordx>0-width   && coordy<SCREENHEIGHT    && coordy>0-height){gb.display.drawBitmap(coordx   ,coordy  ,sprites[9]);} //oasis
-
-    for(i=0;i<5;i++){
-      coordx=fnctn_lndscapeXpos(bkgrnd[i].x_world);
-      coordy=fnctn_lndscapeYpos(bkgrnd[i].y_world);
-      if(coordx<SCREENWIDTH  && coordx>0-bkgrnd[i].width   && coordy<SCREENHEIGHT    && coordy>0-bkgrnd[i].height){
-        gb.display.drawBitmap(coordx   ,coordy  ,sprites[0]);
-      }
+  for(i=0;i<15;i++){
+    coordx=fnctn_lndscapeXpos(bkgrnd[i].x_world);
+    coordy=fnctn_lndscapeYpos(bkgrnd[i].y_world);
+    if(coordx<SCREENWIDTH  && coordx>0-bkgrnd[i].width   && coordy<SCREENHEIGHT    && coordy>0-bkgrnd[i].height){
+      gb.display.drawBitmap(coordx   ,coordy  ,sprites[bkgrnd[i].sprite]);
     }
-    break;
-
-    case 1:
-    coordx=fnctn_lndscapeXpos(57);    coordy=fnctn_lndscapeYpos(19);    width=19;  height=15;  if(coordx<SCREENWIDTH  && coordx>0-width   && coordy<SCREENHEIGHT    && coordy>0-height){gb.display.drawBitmap(coordx   ,coordy  ,sprites[1]);} //basecamp
-    coordx=fnctn_lndscapeXpos(24);    coordy=fnctn_lndscapeYpos(27);    width=32;  height=29;  if(coordx<SCREENWIDTH  && coordx>0-width   && coordy<SCREENHEIGHT    && coordy>0-height){gb.display.drawBitmap(coordx   ,coordy  ,sprites[2]);} //fuel
-    coordx=fnctn_lndscapeXpos(10);    coordy=fnctn_lndscapeYpos(550);   width=32;  height=29;  if(coordx<SCREENWIDTH  && coordx>0-width   && coordy<SCREENHEIGHT    && coordy>0-height){gb.display.drawBitmap(coordx   ,coordy  ,sprites[2]);} //fuel
-    coordx=fnctn_lndscapeXpos(385);   coordy=fnctn_lndscapeYpos(103);   width=32;  height=29;  if(coordx<SCREENWIDTH  && coordx>0-width   && coordy<SCREENHEIGHT    && coordy>0-height){gb.display.drawBitmap(coordx   ,coordy  ,sprites[2]);} //fuel
-    coordx=fnctn_lndscapeXpos(77);    coordy=fnctn_lndscapeYpos(33);    width=25;  height=26;  if(coordx<SCREENWIDTH  && coordx>0-width   && coordy<SCREENHEIGHT    && coordy>0-height){gb.display.drawBitmap(coordx   ,coordy  ,sprites[3]);} //garage
-    coordx=fnctn_lndscapeXpos(589);   coordy=fnctn_lndscapeYpos(26);    width=25;  height=26;  if(coordx<SCREENWIDTH  && coordx>0-width   && coordy<SCREENHEIGHT    && coordy>0-height){gb.display.drawBitmap(coordx   ,coordy  ,sprites[3]);} //garage
-    coordx=fnctn_lndscapeXpos(274);   coordy=fnctn_lndscapeYpos(287);   width=25;  height=26;  if(coordx<SCREENWIDTH  && coordx>0-width   && coordy<SCREENHEIGHT    && coordy>0-height){gb.display.drawBitmap(coordx   ,coordy  ,sprites[3]);} //garage
-    coordx=fnctn_lndscapeXpos(253);   coordy=fnctn_lndscapeYpos(159);   width=36;  height=24;  if(coordx<SCREENWIDTH  && coordx>0-width   && coordy<SCREENHEIGHT    && coordy>0-height){gb.display.drawBitmap(coordx   ,coordy  ,sprites[10]);} //oasis
-    coordx=fnctn_lndscapeXpos(152);   coordy=fnctn_lndscapeYpos(414);   width=36;  height=24;  if(coordx<SCREENWIDTH  && coordx>0-width   && coordy<SCREENHEIGHT    && coordy>0-height){gb.display.drawBitmap(coordx   ,coordy  ,sprites[10]);} //oasis
-    coordx=fnctn_lndscapeXpos(526);   coordy=fnctn_lndscapeYpos(284);   width=36;  height=24;  if(coordx<SCREENWIDTH  && coordx>0-width   && coordy<SCREENHEIGHT    && coordy>0-height){gb.display.drawBitmap(coordx   ,coordy  ,sprites[10]);} //oasis
-
-    for(i=0;i<5;i++){
-      coordx=fnctn_lndscapeXpos(bkgrnd[i].x_world);
-      coordy=fnctn_lndscapeYpos(bkgrnd[i].y_world);
-      if(coordx<SCREENWIDTH  && coordx>0-bkgrnd[i].width   && coordy<SCREENHEIGHT    && coordy>0-bkgrnd[i].height){
-        gb.display.drawBitmap(coordx   ,coordy  ,sprites[0]);
-      }
-    }
-    break;
   }
 }
 
@@ -459,10 +423,14 @@ void outpt_Congratulation(){
 //##################################################################
 //##################################################################
 void outpt_soundfx(byte fxno) {
-  gb.sound.command(0,soundfx[fxno][6],0,0); // set volume
-  gb.sound.command(1,soundfx[fxno][0],0,0); // set waveform
-  gb.sound.command(2,soundfx[fxno][5],-soundfx[fxno][4],0); // set volume slide
-  gb.sound.command(3,soundfx[fxno][3],soundfx[fxno][2]-58,0); // set pitch slide
-  gb.sound.playNote(soundfx[fxno][1],soundfx[fxno][7],0); // play note
+  switch(fxno){                   // set volume
+    case 0: gb.sound.command(0,3,0,0);  break;
+    case 1: gb.sound.command(0,10,0,0); break;
+  }
+  gb.sound.command(1,1,0,0);      // set waveform
+  gb.sound.command(2,0,-7,0);     // set volume slide
+  //gb.sound.command(3,0,53-58,0);  // set pitch slide
+  gb.sound.command(3,0,-8,0);
+  gb.sound.playNote(17,3,0);      // play note
 }
 

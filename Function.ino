@@ -23,7 +23,7 @@ void fnctn_checkButtons() {
       if(gb.buttons.pressed(BTN_LEFT)) {if(lvl==0){lvl=1;}else{lvl=(lvl%2-1);}}
       if(gb.buttons.pressed(BTN_DOWN)){difficulty=(difficulty+1)%3;}
       if(gb.buttons.pressed(BTN_UP)) {if(difficulty==0){difficulty=2;}else{difficulty=(difficulty%3-1);}}
-      if(gb.buttons.pressed(BTN_A))    {gameStatus = GAME;fnctn_initLevel(); }
+      if(gb.buttons.pressed(BTN_A))    {gameStatus = GAME;fnctn_initLevel();fnctn_initPlayer(); }
       if(gb.buttons.pressed(BTN_C)){gb.titleScreen(gamelogo);}
     break;
 
@@ -108,8 +108,8 @@ void fnctn_initPlayer(){
     break;
 
     case 1:
-    player.x_world=65;
-    player.y_world=43;
+    player.x_world=572;
+    player.y_world=593;
     break;
   }
 
@@ -150,14 +150,9 @@ void fnctn_initLevel(){
     case 0:
     nbHeliport=5;
     nbBuilding_Friend=9;
-    nbBuilding_Hostile = 2;
-    
-    bkgrnd[0].x_world=60;   bkgrnd[0].y_world=40;   bkgrnd[0].width=13;  bkgrnd[0].height=7;
-    bkgrnd[1].x_world=593;  bkgrnd[1].y_world=57;   bkgrnd[1].width=13;  bkgrnd[1].height=7;
-    bkgrnd[2].x_world=395;  bkgrnd[2].y_world=133;  bkgrnd[2].width=13;  bkgrnd[2].height=7; 
-    bkgrnd[3].x_world=258;  bkgrnd[3].y_world=294;  bkgrnd[3].width=13;  bkgrnd[3].height=7;
-    bkgrnd[4].x_world=46;   bkgrnd[4].y_world=567;  bkgrnd[4].width=13;  bkgrnd[4].height=7;
+    nbBuilding_Hostile = 21;
 
+    //background
     bkg[0].x_world=22;   bkg[0].y_world=16;   bkg[0].sprite=3;
     bkg[1].x_world=30;   bkg[1].y_world=21;   bkg[1].sprite=3;
     bkg[2].x_world=22;   bkg[2].y_world=26;   bkg[2].sprite=3;
@@ -177,36 +172,51 @@ void fnctn_initLevel(){
     bkg[16].x_world=84;  bkg[16].y_world=84;  bkg[16].sprite=5;
     bkg[17].x_world=7;   bkg[17].y_world=109; bkg[17].sprite=4;
     bkg[18].x_world=110; bkg[18].y_world=26;  bkg[18].sprite=4;
-    
-    //village
-    building_friend[0].x_world=31;      building_friend[0].y_world=72;
+
+    //building not shooting / not destructible
+    bkgrnd[0].x_world=60;     bkgrnd[0].y_world=40;     bkgrnd[0].width=13;   bkgrnd[0].height=7;   bkgrnd[0].sprite=0;   //heliport
+    bkgrnd[1].x_world=593;    bkgrnd[1].y_world=57;     bkgrnd[1].width=13;   bkgrnd[1].height=7;   bkgrnd[1].sprite=0;
+    bkgrnd[2].x_world=395;    bkgrnd[2].y_world=133;    bkgrnd[2].width=13;   bkgrnd[2].height=7;   bkgrnd[2].sprite=0;
+    bkgrnd[3].x_world=258;    bkgrnd[3].y_world=294;    bkgrnd[3].width=13;   bkgrnd[3].height=7;   bkgrnd[3].sprite=0;
+    bkgrnd[4].x_world=46;     bkgrnd[4].y_world=567;    bkgrnd[4].width=13;   bkgrnd[4].height=7;   bkgrnd[4].sprite=0;
+    bkgrnd[5].x_world=57;     bkgrnd[5].y_world=19;     bkgrnd[5].width=19;   bkgrnd[5].height=15;  bkgrnd[5].sprite=1;   //basecamp
+    bkgrnd[6].x_world=24;     bkgrnd[6].y_world=27;     bkgrnd[6].width=32;   bkgrnd[6].height=29;  bkgrnd[6].sprite=2;   //fuel
+    bkgrnd[7].x_world=10;     bkgrnd[7].y_world=550;    bkgrnd[7].width=32;   bkgrnd[7].height=29;  bkgrnd[7].sprite=2;
+    bkgrnd[8].x_world=385;    bkgrnd[8].y_world=103;    bkgrnd[8].width=32;   bkgrnd[8].height=29;  bkgrnd[8].sprite=2;
+    bkgrnd[9].x_world=77;     bkgrnd[9].y_world=33;     bkgrnd[9].width=25;   bkgrnd[9].height=26;  bkgrnd[9].sprite=3;   //garage
+    bkgrnd[10].x_world=589;   bkgrnd[10].y_world=26;    bkgrnd[10].width=25;  bkgrnd[10].height=26; bkgrnd[10].sprite=3;
+    bkgrnd[11].x_world=274;   bkgrnd[11].y_world=287;   bkgrnd[11].width=25;  bkgrnd[11].height=26; bkgrnd[11].sprite=3;
+    bkgrnd[12].x_world=253;   bkgrnd[12].y_world=159;   bkgrnd[12].width=36;  bkgrnd[12].height=24; bkgrnd[12].sprite=9; //oasis
+    bkgrnd[13].x_world=152;   bkgrnd[13].y_world=414;   bkgrnd[13].width=36;  bkgrnd[13].height=24; bkgrnd[13].sprite=9;
+    bkgrnd[14].x_world=526;   bkgrnd[14].y_world=284;   bkgrnd[14].width=36;  bkgrnd[14].height=24; bkgrnd[14].sprite=9;
+
+    //building not shooting / destructible
+    building_friend[0].x_world=31;      building_friend[0].y_world=72;  //village
     building_friend[1].x_world=538;     building_friend[1].y_world=73;
     building_friend[2].x_world=16;      building_friend[2].y_world=580;
-    for(i=0;i<3;i++){
-      building_friend[i].width=72;      
-      building_friend[i].height=41;   
-      building_friend[i].sprite=4;  
-      building_friend[i].animBoom=0;   
-      building_friend[i].life = 80;
-    }
-    
-    //camp
-    building_friend[3].x_world=289;     building_friend[3].y_world=164;
+    building_friend[3].x_world=289;     building_friend[3].y_world=164; //camp
     building_friend[4].x_world=568;     building_friend[4].y_world=276;
     building_friend[5].x_world=381;     building_friend[5].y_world=456;
     building_friend[6].x_world=600;     building_friend[6].y_world=517;
     building_friend[7].x_world=533;     building_friend[7].y_world=532;
     building_friend[8].x_world=511;     building_friend[8].y_world=600;
-    for(i=3;i<9;i++){
-      building_friend[i].width=16;      
-      building_friend[i].height=22;   
-      building_friend[i].sprite=7;  
-      building_friend[i].animBoom=0;   
-      building_friend[i].life = 20;
+    for(i=0;i<9;i++){
+      building_friend[i].animBoom=0;
+      if(i<3){ //village
+        building_friend[i].width=72;      
+        building_friend[i].height=41;   
+        building_friend[i].sprite=4;     
+        building_friend[i].life = 80;
+      }else{   //camp
+        building_friend[i].width=16;      
+        building_friend[i].height=22;   
+        building_friend[i].sprite=7;  
+        building_friend[i].life = 20;
+      }
     }
 
-    //tours
-    building_hostile[0].x_world=95;    building_hostile[0].y_world=286;   
+    //building shooting / destructible
+    building_hostile[0].x_world=95;    building_hostile[0].y_world=286;   //tours
     building_hostile[1].x_world=77;    building_hostile[1].y_world=324;   
     building_hostile[2].x_world=117;   building_hostile[2].y_world=344;   
     building_hostile[3].x_world=134;   building_hostile[3].y_world=304;   
@@ -223,69 +233,63 @@ void fnctn_initLevel(){
     building_hostile[14].x_world=556;  building_hostile[14].y_world=564;  
     building_hostile[15].x_world=550;  building_hostile[15].y_world=585;  
     building_hostile[16].x_world=547;  building_hostile[16].y_world=609;  
-    for(i=0;i<17;i++){
-      building_hostile[i].width=7;
-      building_hostile[i].height=10;   
-      building_hostile[i].sprite=8;  
-      building_hostile[i].animBoom=0;   
-      building_hostile[i].life = 20;   
-      building_hostile[i].fireTimer = 0;
-    }
-
-    //bunker
-    building_hostile[17].x_world=94;   building_hostile[17].y_world=302;  
+    building_hostile[17].x_world=94;   building_hostile[17].y_world=302;  //bunker
     building_hostile[18].x_world=401;  building_hostile[18].y_world=36;
     building_hostile[19].x_world=401;  building_hostile[19].y_world=411;
     building_hostile[20].x_world=577;  building_hostile[20].y_world=584;
-    for(i=17;i<21;i++){
-      building_hostile[i].width=32; 
-      building_hostile[i].height=32;  
-      building_hostile[i].sprite=6; 
-      building_hostile[i].animBoom=0;  
-      building_hostile[i].life = 80;  
+    for(i=0;i<21;i++){
+      building_hostile[i].animBoom=0;
       building_hostile[i].fireTimer = 0;
+      if(i<17){
+        building_hostile[i].width=7;
+        building_hostile[i].height=10;   
+        building_hostile[i].sprite=8;  
+        building_hostile[i].life = 20;   
+      }else{
+        building_hostile[i].width=32; 
+        building_hostile[i].height=32;  
+        building_hostile[i].sprite=6;   
+        building_hostile[i].life = 80;  
+      }
     }
 
     if(difficulty>0){
       //mobile ennemies
-      mobilUnit_hostile[0].x_world=572; mobilUnit_hostile[0].y_world=123;   mobilUnit_hostile[0].batiment=1;
-      mobilUnit_hostile[1].x_world=309; mobilUnit_hostile[1].y_world=166;   mobilUnit_hostile[1].batiment=3;
-      mobilUnit_hostile[2].x_world=294; mobilUnit_hostile[2].y_world=191;   mobilUnit_hostile[2].batiment=3;
-      mobilUnit_hostile[3].x_world=586; mobilUnit_hostile[3].y_world=275;   mobilUnit_hostile[3].batiment=4;
-      mobilUnit_hostile[4].x_world=579; mobilUnit_hostile[4].y_world=300;   mobilUnit_hostile[4].batiment=4;
-      mobilUnit_hostile[5].x_world=366; mobilUnit_hostile[5].y_world=455;   mobilUnit_hostile[5].batiment=5;
-      mobilUnit_hostile[6].x_world=389; mobilUnit_hostile[6].y_world=483;   mobilUnit_hostile[6].batiment=5;
-      mobilUnit_hostile[7].x_world=617; mobilUnit_hostile[7].y_world=520;   mobilUnit_hostile[7].batiment=6;
-      mobilUnit_hostile[8].x_world=610; mobilUnit_hostile[8].y_world=541;   mobilUnit_hostile[8].batiment=6;
-      mobilUnit_hostile[9].x_world=550; mobilUnit_hostile[9].y_world=535;   mobilUnit_hostile[9].batiment=7;
-      mobilUnit_hostile[10].x_world=544; mobilUnit_hostile[10].y_world=558; mobilUnit_hostile[10].batiment=7;
-      mobilUnit_hostile[11].x_world=519; mobilUnit_hostile[11].y_world=592; mobilUnit_hostile[11].batiment=8;
-      mobilUnit_hostile[12].x_world=528; mobilUnit_hostile[12].y_world=603; mobilUnit_hostile[12].batiment=8;
-      mobilUnit_hostile[13].x_world=93;  mobilUnit_hostile[13].y_world=586; mobilUnit_hostile[13].batiment=2;
-      mobilUnit_hostile[14].x_world=345; mobilUnit_hostile[14].y_world=540; mobilUnit_hostile[14].batiment=2;
-      for(i=0;i<15;i++){
-        mobilUnit_hostile[i].width=6;  
-        mobilUnit_hostile[i].height=6;  
-        mobilUnit_hostile[i].sprite=0;  
-        mobilUnit_hostile[i].animBoom=0;  
-        mobilUnit_hostile[i].life=5;  
-        mobilUnit_hostile[i].fireTimer=0;  
-        mobilUnit_hostile[i].dir=1;  
-      }
-     
-      mobilUnit_hostile[15].x_world=379; mobilUnit_hostile[15].y_world=23;   mobilUnit_hostile[0].batiment=18;
+      mobilUnit_hostile[0].x_world=572;  mobilUnit_hostile[0].y_world=123;   mobilUnit_hostile[0].batiment=1; //infantry
+      mobilUnit_hostile[1].x_world=309;  mobilUnit_hostile[1].y_world=166;   mobilUnit_hostile[1].batiment=3;
+      mobilUnit_hostile[2].x_world=294;  mobilUnit_hostile[2].y_world=191;   mobilUnit_hostile[2].batiment=3;
+      mobilUnit_hostile[3].x_world=586;  mobilUnit_hostile[3].y_world=275;   mobilUnit_hostile[3].batiment=4;
+      mobilUnit_hostile[4].x_world=579;  mobilUnit_hostile[4].y_world=300;   mobilUnit_hostile[4].batiment=4;
+      mobilUnit_hostile[5].x_world=366;  mobilUnit_hostile[5].y_world=455;   mobilUnit_hostile[5].batiment=5;
+      mobilUnit_hostile[6].x_world=389;  mobilUnit_hostile[6].y_world=483;   mobilUnit_hostile[6].batiment=5;
+      mobilUnit_hostile[7].x_world=617;  mobilUnit_hostile[7].y_world=520;   mobilUnit_hostile[7].batiment=6;
+      mobilUnit_hostile[8].x_world=610;  mobilUnit_hostile[8].y_world=541;   mobilUnit_hostile[8].batiment=6;
+      mobilUnit_hostile[9].x_world=550;  mobilUnit_hostile[9].y_world=535;   mobilUnit_hostile[9].batiment=7;
+      mobilUnit_hostile[10].x_world=544; mobilUnit_hostile[10].y_world=558;  mobilUnit_hostile[10].batiment=7;
+      mobilUnit_hostile[11].x_world=519; mobilUnit_hostile[11].y_world=592;  mobilUnit_hostile[11].batiment=8;
+      mobilUnit_hostile[12].x_world=528; mobilUnit_hostile[12].y_world=603;  mobilUnit_hostile[12].batiment=8;
+      mobilUnit_hostile[13].x_world=93;  mobilUnit_hostile[13].y_world=586;  mobilUnit_hostile[13].batiment=2;
+      mobilUnit_hostile[14].x_world=345; mobilUnit_hostile[14].y_world=540;  mobilUnit_hostile[14].batiment=2;
+      mobilUnit_hostile[15].x_world=379; mobilUnit_hostile[15].y_world=23;   mobilUnit_hostile[0].batiment=18; //tank
       mobilUnit_hostile[16].x_world=73;  mobilUnit_hostile[16].y_world=284;  mobilUnit_hostile[0].batiment=17;
       mobilUnit_hostile[17].x_world=411; mobilUnit_hostile[17].y_world=398;  mobilUnit_hostile[0].batiment=19;
       mobilUnit_hostile[18].x_world=279; mobilUnit_hostile[18].y_world=544;  mobilUnit_hostile[0].batiment=20;
       mobilUnit_hostile[19].x_world=576; mobilUnit_hostile[19].y_world=531;  mobilUnit_hostile[0].batiment=20;
-      for(i=15;i<20;i++){
-        mobilUnit_hostile[i].width=16;  
-        mobilUnit_hostile[i].height=14;  
-        mobilUnit_hostile[i].sprite=1;  
-        mobilUnit_hostile[i].animBoom=0;  
-        mobilUnit_hostile[i].life=30;  
+      for(i=0;i<20;i++){
+        mobilUnit_hostile[i].animBoom=0;
         mobilUnit_hostile[i].fireTimer=0;  
-        mobilUnit_hostile[i].dir=4;  
+        mobilUnit_hostile[i].dir=4;
+        if(i<15){
+          mobilUnit_hostile[i].width=6;  
+          mobilUnit_hostile[i].height=6;  
+          mobilUnit_hostile[i].sprite=0;  
+          mobilUnit_hostile[i].life=5;   
+        }else{
+          mobilUnit_hostile[i].width=16;  
+          mobilUnit_hostile[i].height=14;  
+          mobilUnit_hostile[i].sprite=1;   
+          mobilUnit_hostile[i].life=30;  
+        }
       }
     }
   break;
@@ -295,104 +299,113 @@ void fnctn_initLevel(){
     nbHeliport=5;
     nbBuilding_Friend=9;
     nbBuilding_Hostile = 21;
+
+    //background
+    bkg[0].x_world=55;   bkg[0].y_world=40;   bkg[0].sprite=6;  //grass
+    bkg[1].x_world=78;   bkg[1].y_world=37;   bkg[1].sprite=6;
+    bkg[2].x_world=72;   bkg[2].y_world=58;   bkg[2].sprite=6;
+    bkg[3].x_world=52;   bkg[3].y_world=92;   bkg[3].sprite=6;
+    bkg[4].x_world=105;  bkg[4].y_world=108;  bkg[4].sprite=6;
+    bkg[5].x_world=19;   bkg[5].y_world=16;   bkg[5].sprite=5;  //rock
+    bkg[6].x_world=89;   bkg[6].y_world=23;   bkg[6].sprite=5;
+    bkg[7].x_world=4;    bkg[7].y_world=111;  bkg[7].sprite=5;
+    bkg[8].x_world=5;    bkg[8].y_world=72;   bkg[8].sprite=7;  //tree (small one)
+    bkg[9].x_world=105;  bkg[9].y_world=64;   bkg[9].sprite=7;
+    bkg[10].x_world=49;  bkg[10].y_world=11;  bkg[10].sprite=8; //tree (normal one)
+    bkg[11].x_world=2;   bkg[11].y_world=33;  bkg[11].sprite=8;
+    bkg[12].x_world=103; bkg[12].y_world=39;  bkg[12].sprite=8;
+    bkg[13].x_world=34;  bkg[13].y_world=55;  bkg[13].sprite=8;
+    bkg[14].x_world=75;  bkg[14].y_world=82;  bkg[14].sprite=8;
+    bkg[15].x_world=26;  bkg[15].y_world=95;  bkg[15].sprite=8;
+    bkg[16].x_world=3;   bkg[16].y_world=9;   bkg[16].sprite=9; //tree (big one)
+    bkg[17].x_world=33;  bkg[17].y_world=29;  bkg[17].sprite=9;
+    bkg[18].x_world=11;  bkg[18].y_world=51;  bkg[18].sprite=9;
+
+    //building not shooting / not destructible
+    bkgrnd[0].x_world=567;    bkgrnd[0].y_world=590;    bkgrnd[0].width=13;   bkgrnd[0].height=7;   bkgrnd[5].sprite=0;   //heliport
+    bkgrnd[1].x_world=273;    bkgrnd[1].y_world=92;     bkgrnd[1].width=13;   bkgrnd[1].height=7;   bkgrnd[5].sprite=0;
+    bkgrnd[2].x_world=569;    bkgrnd[2].y_world=31;     bkgrnd[2].width=13;   bkgrnd[2].height=7;   bkgrnd[5].sprite=0;
+    bkgrnd[3].x_world=31;     bkgrnd[3].y_world=344;    bkgrnd[3].width=13;   bkgrnd[3].height=7;   bkgrnd[5].sprite=0;
+    bkgrnd[4].x_world=58;     bkgrnd[4].y_world=600;    bkgrnd[4].width=13;   bkgrnd[4].height=7;   bkgrnd[5].sprite=0;
+    bkgrnd[5].x_world=565;    bkgrnd[5].y_world=571;    bkgrnd[5].width=19;   bkgrnd[5].height=15;  bkgrnd[5].sprite=1;   //base
+    bkgrnd[6].x_world=544;    bkgrnd[6].y_world=595;    bkgrnd[6].width=32;   bkgrnd[6].height=29;  bkgrnd[6].sprite=2;   //fuel
+    bkgrnd[7].x_world=536;    bkgrnd[7].y_world=18;     bkgrnd[7].width=32;   bkgrnd[7].height=29;  bkgrnd[7].sprite=2;
+    bkgrnd[8].x_world=23;     bkgrnd[8].y_world=584;    bkgrnd[8].width=32;   bkgrnd[8].height=29;  bkgrnd[8].sprite=2;
+    bkgrnd[9].x_world=585;    bkgrnd[9].y_world=597;    bkgrnd[9].width=25;   bkgrnd[9].height=26;  bkgrnd[9].sprite=3;   //garage
+    bkgrnd[10].x_world=292;   bkgrnd[10].y_world=85;    bkgrnd[10].width=25;  bkgrnd[10].height=26; bkgrnd[10].sprite=3;
+    bkgrnd[11].x_world=47;    bkgrnd[11].y_world=336;   bkgrnd[11].width=25;  bkgrnd[11].height=26; bkgrnd[11].sprite=3;
+    bkgrnd[12].x_world=169;   bkgrnd[12].y_world=465;   bkgrnd[12].width=36;  bkgrnd[12].height=24; bkgrnd[12].sprite=10;  //oasis
+    bkgrnd[13].x_world=147;   bkgrnd[13].y_world=211;   bkgrnd[13].width=36;  bkgrnd[13].height=24; bkgrnd[13].sprite=10;
+    bkgrnd[14].x_world=394;   bkgrnd[14].y_world=339;   bkgrnd[14].width=36;  bkgrnd[14].height=24; bkgrnd[14].sprite=10;
+
+    //building not shooting / destructible
+    building_friend[0].x_world=395;     building_friend[0].y_world=577; //village
+    building_friend[1].x_world=36;      building_friend[1].y_world=81;
+    building_friend[2].x_world=535;     building_friend[2].y_world=91;
+    building_friend[3].x_world=122;     building_friend[3].y_world=8;   //camp
+    building_friend[4].x_world=372;     building_friend[4].y_world=7;
+    building_friend[5].x_world=372;     building_friend[5].y_world=133;
+    building_friend[6].x_world=247;     building_friend[6].y_world=257;
+    building_friend[7].x_world=372;     building_friend[7].y_world=382;
+    building_friend[8].x_world=123;     building_friend[8].y_world=507;
+    for(i=0;i<9;i++){
+      building_friend[i].animBoom=0;
+      if(i<3){ //village
+        building_friend[i].width=72;      
+        building_friend[i].height=41;   
+        building_friend[i].sprite=5;     
+        building_friend[i].life = 80;
+      }else{   //camp
+        building_friend[i].width=16;      
+        building_friend[i].height=22;   
+        building_friend[i].sprite=7;  
+        building_friend[i].life = 20;
+      }
+    }
+
     
-    bkgrnd[0].x_world=60;   bkgrnd[0].y_world=40;   bkgrnd[0].width=13;  bkgrnd[0].height=7;
-    bkgrnd[1].x_world=593;  bkgrnd[1].y_world=57;   bkgrnd[1].width=13;  bkgrnd[1].height=7;
-    bkgrnd[2].x_world=395;  bkgrnd[2].y_world=133;  bkgrnd[2].width=13;  bkgrnd[2].height=7; 
-    bkgrnd[3].x_world=258;  bkgrnd[3].y_world=294;  bkgrnd[3].width=13;  bkgrnd[3].height=7;
-    bkgrnd[4].x_world=46;   bkgrnd[4].y_world=567;  bkgrnd[4].width=13;  bkgrnd[4].height=7;
 
-    bkg[0].x_world=22;   bkg[0].y_world=16;   bkg[0].sprite=6;
-    bkg[1].x_world=30;   bkg[1].y_world=21;   bkg[1].sprite=6;
-    bkg[2].x_world=22;   bkg[2].y_world=26;   bkg[2].sprite=6;
-    bkg[3].x_world=77;   bkg[3].y_world=11;   bkg[3].sprite=6;
-    bkg[4].x_world=43;   bkg[4].y_world=45;   bkg[4].sprite=6;
-    bkg[5].x_world=82;   bkg[5].y_world=48;   bkg[5].sprite=6;
-    bkg[6].x_world=27;   bkg[6].y_world=81;   bkg[6].sprite=6;
-    bkg[7].x_world=36;   bkg[7].y_world=85;   bkg[7].sprite=6;
-    bkg[8].x_world=28;   bkg[8].y_world=91;   bkg[8].sprite=6;
-    bkg[9].x_world=103;  bkg[9].y_world=116;  bkg[9].sprite=6;
-    bkg[10].x_world=64;  bkg[10].y_world=30;  bkg[10].sprite=0;
-    bkg[11].x_world=14;  bkg[11].y_world=64;  bkg[11].sprite=0;
-    bkg[12].x_world=53;  bkg[12].y_world=119; bkg[12].sprite=10;
-    bkg[13].x_world=4;   bkg[13].y_world=3;   bkg[13].sprite=7;
-    bkg[14].x_world=89;  bkg[14].y_world=73;  bkg[14].sprite=7;
-    bkg[15].x_world=98;  bkg[15].y_world=80;  bkg[15].sprite=7;
-    bkg[16].x_world=84;  bkg[16].y_world=84;  bkg[16].sprite=9;
-    bkg[17].x_world=7;   bkg[17].y_world=109; bkg[17].sprite=4;
-    bkg[18].x_world=110; bkg[18].y_world=26;  bkg[18].sprite=4;
-
-    //village
-    building_friend[0].x_world=33;      building_friend[0].y_world=69;
-    building_friend[1].x_world=538;     building_friend[1].y_world=73;
-    building_friend[2].x_world=16;      building_friend[2].y_world=580;
-    for(i=0;i<3;i++){
-      building_friend[i].width=72;      
-      building_friend[i].height=41;   
-      building_friend[i].sprite=5;  
-      building_friend[i].animBoom=0;   
-      building_friend[i].life = 80;
-    }
-    
-    //camp
-    building_friend[3].x_world=289;     building_friend[3].y_world=164;
-    building_friend[4].x_world=568;     building_friend[4].y_world=276;
-    building_friend[5].x_world=381;     building_friend[5].y_world=456;
-    building_friend[6].x_world=600;     building_friend[6].y_world=517;
-    building_friend[7].x_world=533;     building_friend[7].y_world=532;
-    building_friend[8].x_world=511;     building_friend[8].y_world=600;
-    for(i=3;i<9;i++){
-      building_friend[i].width=16;      
-      building_friend[i].height=22;   
-      building_friend[i].sprite=7;  
-      building_friend[i].animBoom=0;   
-      building_friend[i].life = 20;
-    }
-
-    //tours
-    building_hostile[0].x_world=95;    building_hostile[0].y_world=286;   
-    building_hostile[1].x_world=77;    building_hostile[1].y_world=324;   
-    building_hostile[2].x_world=117;   building_hostile[2].y_world=344;   
-    building_hostile[3].x_world=134;   building_hostile[3].y_world=304;   
-    building_hostile[4].x_world=381;   building_hostile[4].y_world=38;    
-    building_hostile[5].x_world=436;   building_hostile[5].y_world=21;    
-    building_hostile[6].x_world=417;   building_hostile[6].y_world=77;    
-    building_hostile[7].x_world=397;   building_hostile[7].y_world=396;   
-    building_hostile[8].x_world=378;   building_hostile[8].y_world=428;   
-    building_hostile[9].x_world=413;   building_hostile[9].y_world=456;   
-    building_hostile[10].x_world=451;  building_hostile[10].y_world=424;  
-    building_hostile[11].x_world=436;  building_hostile[11].y_world=399;  
-    building_hostile[12].x_world=608;  building_hostile[12].y_world=552;  
-    building_hostile[13].x_world=586;  building_hostile[13].y_world=554;  
-    building_hostile[14].x_world=556;  building_hostile[14].y_world=564;  
-    building_hostile[15].x_world=550;  building_hostile[15].y_world=585;  
-    building_hostile[16].x_world=547;  building_hostile[16].y_world=609;  
-    for(i=0;i<17;i++){
-      building_hostile[i].width=7;
-      building_hostile[i].height=10;   
-      building_hostile[i].sprite=8;  
-      building_hostile[i].animBoom=0;   
-      building_hostile[i].life = 20;   
+    //building shooting / destructible
+    building_hostile[0].x_world=3;     building_hostile[0].y_world=16;    //tours
+    building_hostile[1].x_world=43;    building_hostile[1].y_world=2;   
+    building_hostile[2].x_world=59;    building_hostile[2].y_world=51;   
+    building_hostile[3].x_world=73;    building_hostile[3].y_world=35;   
+    building_hostile[4].x_world=177;   building_hostile[4].y_world=97; 
+    building_hostile[5].x_world=406;   building_hostile[5].y_world=86;    
+    building_hostile[6].x_world=423;   building_hostile[6].y_world=70;    
+    building_hostile[7].x_world=463;   building_hostile[7].y_world=107;
+    building_hostile[8].x_world=435;   building_hostile[8].y_world=225;   
+    building_hostile[9].x_world=132;   building_hostile[9].y_world=279;   
+    building_hostile[10].x_world=272;  building_hostile[10].y_world=352;  
+    building_hostile[11].x_world=314;  building_hostile[11].y_world=325;  
+    building_hostile[12].x_world=335;  building_hostile[12].y_world=362;
+    building_hostile[13].x_world=17;   building_hostile[13].y_world=433;  
+    building_hostile[14].x_world=126;  building_hostile[14].y_world=389;  
+    building_hostile[15].x_world=98;   building_hostile[15].y_world=453;  
+    building_hostile[16].x_world=4;    building_hostile[16].y_world=515;  
+    building_hostile[17].x_world=36;   building_hostile[17].y_world=14;   //bunker
+    building_hostile[18].x_world=46;   building_hostile[18].y_world=462;
+    building_hostile[19].x_world=298;  building_hostile[19].y_world=337;
+    building_hostile[20].x_world=422;  building_hostile[20].y_world=85;
+    for(i=0;i<21;i++){
+      building_hostile[i].animBoom=0;
       building_hostile[i].fireTimer = 0;
-    }
-
-    //bunker
-    building_hostile[17].x_world=94;   building_hostile[17].y_world=302;  
-    building_hostile[18].x_world=401;  building_hostile[18].y_world=36;
-    building_hostile[19].x_world=401;  building_hostile[19].y_world=411;
-    building_hostile[20].x_world=577;  building_hostile[20].y_world=584;
-    for(i=17;i<21;i++){
-      building_hostile[i].width=32; 
-      building_hostile[i].height=32;  
-      building_hostile[i].sprite=6; 
-      building_hostile[i].animBoom=0;  
-      building_hostile[i].life = 80;  
-      building_hostile[i].fireTimer = 0;
+      if(i<17){
+        building_hostile[i].width=7;
+        building_hostile[i].height=10;   
+        building_hostile[i].sprite=8;  
+        building_hostile[i].life = 20;   
+      }else{
+        building_hostile[i].width=32; 
+        building_hostile[i].height=32;  
+        building_hostile[i].sprite=6;   
+        building_hostile[i].life = 80;  
+      }
     }
 
     if(difficulty>0){
       //mobile ennemies
-      mobilUnit_hostile[0].x_world=572; mobilUnit_hostile[0].y_world=123;   mobilUnit_hostile[0].batiment=1;
+      mobilUnit_hostile[0].x_world=572; mobilUnit_hostile[0].y_world=123;   mobilUnit_hostile[0].batiment=1;  //infantry
       mobilUnit_hostile[1].x_world=309; mobilUnit_hostile[1].y_world=166;   mobilUnit_hostile[1].batiment=3;
       mobilUnit_hostile[2].x_world=294; mobilUnit_hostile[2].y_world=191;   mobilUnit_hostile[2].batiment=3;
       mobilUnit_hostile[3].x_world=586; mobilUnit_hostile[3].y_world=275;   mobilUnit_hostile[3].batiment=4;
@@ -407,29 +420,26 @@ void fnctn_initLevel(){
       mobilUnit_hostile[12].x_world=528; mobilUnit_hostile[12].y_world=603; mobilUnit_hostile[12].batiment=8;
       mobilUnit_hostile[13].x_world=93;  mobilUnit_hostile[13].y_world=586; mobilUnit_hostile[13].batiment=2;
       mobilUnit_hostile[14].x_world=345; mobilUnit_hostile[14].y_world=540; mobilUnit_hostile[14].batiment=2;
-      for(i=0;i<15;i++){
-        mobilUnit_hostile[i].width=6;  
-        mobilUnit_hostile[i].height=6;  
-        mobilUnit_hostile[i].sprite=0;  
-        mobilUnit_hostile[i].animBoom=0;  
-        mobilUnit_hostile[i].life=5;  
-        mobilUnit_hostile[i].fireTimer=0;  
-        mobilUnit_hostile[i].dir=1;  
-      }
-     
-      mobilUnit_hostile[15].x_world=379; mobilUnit_hostile[15].y_world=23;   mobilUnit_hostile[0].batiment=18;
+      mobilUnit_hostile[15].x_world=379; mobilUnit_hostile[15].y_world=23;   mobilUnit_hostile[0].batiment=18;  //tank
       mobilUnit_hostile[16].x_world=73;  mobilUnit_hostile[16].y_world=284;  mobilUnit_hostile[0].batiment=17;
       mobilUnit_hostile[17].x_world=411; mobilUnit_hostile[17].y_world=398;  mobilUnit_hostile[0].batiment=19;
       mobilUnit_hostile[18].x_world=279; mobilUnit_hostile[18].y_world=544;  mobilUnit_hostile[0].batiment=20;
       mobilUnit_hostile[19].x_world=576; mobilUnit_hostile[19].y_world=531;  mobilUnit_hostile[0].batiment=20;
-      for(i=15;i<20;i++){
-        mobilUnit_hostile[i].width=16;  
-        mobilUnit_hostile[i].height=14;  
-        mobilUnit_hostile[i].sprite=1;  
-        mobilUnit_hostile[i].animBoom=0;  
-        mobilUnit_hostile[i].life=30;  
+      for(i=0;i<20;i++){
+        mobilUnit_hostile[i].animBoom=0;
         mobilUnit_hostile[i].fireTimer=0;  
-        mobilUnit_hostile[i].dir=4;  
+        mobilUnit_hostile[i].dir=4;
+        if(i<15){
+          mobilUnit_hostile[i].width=6;  
+          mobilUnit_hostile[i].height=6;  
+          mobilUnit_hostile[i].sprite=0;  
+          mobilUnit_hostile[i].life=5;   
+        }else{
+          mobilUnit_hostile[i].width=16;  
+          mobilUnit_hostile[i].height=14;  
+          mobilUnit_hostile[i].sprite=1;   
+          mobilUnit_hostile[i].life=30;  
+        }
       }
     }
   break;   
