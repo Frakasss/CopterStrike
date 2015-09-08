@@ -218,24 +218,70 @@ void outpt_animBoom(){
     gb.display.drawBitmap(coordx,coordy,boom[player.animBoom]);
   }
 
+  if(nbBuilding_Hostile>nbBuilding_Friend){
+    check01=nbBuilding_Hostile;
+  }else{
+    check01=nbBuilding_Friend;
+  }
+  if(check01<20 && difficulty>0){check01=20;}
+  
+
+  for(i=0;i<check01;i++){
+    if(i<=nbBuilding_Hostile){
+      if(building_hostile[i].life==0 && building_hostile[i].animBoom<12){
+        outpt_soundfx(1);
+        coordx=fnctn_lndscapeXpos(building_hostile[i].x_world);
+        coordy=fnctn_lndscapeYpos(building_hostile[i].y_world)-3;
+        if(building_hostile[i].sprite==4){
+          gb.display.drawBitmap(coordx+5    ,coordy     ,boom[building_hostile[i].animBoom]);
+          gb.display.drawBitmap(coordx+20   ,coordy+5   ,boom[building_hostile[i].animBoom]);
+          gb.display.drawBitmap(coordx+8    ,coordy+15  ,boom[building_hostile[i].animBoom]);
+        }else{
+          gb.display.drawBitmap(coordx,coordy,boom[building_hostile[i].animBoom]);
+        }
+      }
+    }
+
+    if(i<=nbBuilding_Friend){
+      if(building_friend[i].life==0 && building_friend[i].animBoom<12){
+        outpt_soundfx(1);
+        coordx=fnctn_lndscapeXpos(building_friend[i].x_world);
+        coordy=fnctn_lndscapeYpos(building_friend[i].y_world)-3;
+        if(building_friend[i].sprite==4){
+          gb.display.drawBitmap(coordx+10   ,coordy+3  ,boom[building_friend[i].animBoom]);
+          gb.display.drawBitmap(coordx+41   ,coordy+4  ,boom[building_friend[i].animBoom]);
+          gb.display.drawBitmap(coordx+38   ,coordy+24 ,boom[building_friend[i].animBoom]);
+        }else{
+          gb.display.drawBitmap(coordx+3    ,coordy    ,boom[building_friend[i].animBoom]);
+        }
+      }
+    }
+
+    if(i<=20 && difficulty>0){
+      if(mobilUnit_hostile[i].life==0 && mobilUnit_hostile[i].animBoom<12){
+        coordx=fnctn_lndscapeXpos(mobilUnit_hostile[i].x_world)+5;
+        coordy=fnctn_lndscapeYpos(mobilUnit_hostile[i].y_world)-3;
+        if(mobilUnit_hostile[i].sprite==1){ 
+          outpt_soundfx(1);
+          gb.display.drawBitmap(coordx    ,coordy  ,boom[mobilUnit_hostile[i].animBoom]);
+        }
+      }
+    }
+    
+  }
+
+/*
   for(i=0;i<nbBuilding_Hostile;i++){
     if(building_hostile[i].life==0 && building_hostile[i].animBoom<12){
       outpt_soundfx(1);
       coordx=fnctn_lndscapeXpos(building_hostile[i].x_world);
       coordy=fnctn_lndscapeYpos(building_hostile[i].y_world)-4;
       switch(building_hostile[i].sprite){
-        /*
         case 4: 
         gb.display.drawBitmap(coordx+2    ,coordy+15  ,boom[building_hostile[i].animBoom]);
         gb.display.drawBitmap(coordx+10   ,coordy+1   ,boom[building_hostile[i].animBoom]);
         gb.display.drawBitmap(coordx+14   ,coordy+23  ,boom[building_hostile[i].animBoom]);
-        gb.display.drawBitmap(coordx+27   ,coordy+2   ,boom[building_hostile[i].animBoom]);
-        gb.display.drawBitmap(coordx+30   ,coordy+28  ,boom[building_hostile[i].animBoom]);
-        gb.display.drawBitmap(coordx+46   ,coordy+21  ,boom[building_hostile[i].animBoom]);
-        gb.display.drawBitmap(coordx+57   ,coordy+2   ,boom[building_hostile[i].animBoom]);
-        gb.display.drawBitmap(coordx+63   ,coordy+26  ,boom[building_hostile[i].animBoom]);
         break;
-        */
         default:
         gb.display.drawBitmap(coordx,coordy,boom[building_hostile[i].animBoom]);
         break;
@@ -249,30 +295,15 @@ void outpt_animBoom(){
       coordx=fnctn_lndscapeXpos(building_friend[i].x_world);
       coordy=fnctn_lndscapeYpos(building_friend[i].y_world)-4;
       switch(building_friend[i].sprite){
-        /*
         case 4: 
         gb.display.drawBitmap(coordx+2    ,coordy+15  ,boom[building_friend[i].animBoom]);
         gb.display.drawBitmap(coordx+10   ,coordy+1   ,boom[building_friend[i].animBoom]);
-        gb.display.drawBitmap(coordx+14   ,coordy+23  ,boom[building_friend[i].animBoom]);
-        gb.display.drawBitmap(coordx+27   ,coordy+2   ,boom[building_friend[i].animBoom]);
-        gb.display.drawBitmap(coordx+30   ,coordy+28  ,boom[building_friend[i].animBoom]);
-        gb.display.drawBitmap(coordx+46   ,coordy+21  ,boom[building_friend[i].animBoom]);
-        gb.display.drawBitmap(coordx+57   ,coordy+2   ,boom[building_friend[i].animBoom]);
-        gb.display.drawBitmap(coordx+63   ,coordy+26  ,boom[building_friend[i].animBoom]);
         break;
         case 5: 
         gb.display.drawBitmap(coordx+2    ,coordy+15  ,boom[building_friend[i].animBoom]);
         gb.display.drawBitmap(coordx+10   ,coordy+1   ,boom[building_friend[i].animBoom]);
         gb.display.drawBitmap(coordx+14   ,coordy+23  ,boom[building_friend[i].animBoom]);
         gb.display.drawBitmap(coordx+27   ,coordy+2   ,boom[building_friend[i].animBoom]);
-        gb.display.drawBitmap(coordx+30   ,coordy+28  ,boom[building_friend[i].animBoom]);
-        gb.display.drawBitmap(coordx+46   ,coordy+21  ,boom[building_friend[i].animBoom]);
-        gb.display.drawBitmap(coordx+57   ,coordy+2   ,boom[building_friend[i].animBoom]);
-        gb.display.drawBitmap(coordx+63   ,coordy+26  ,boom[building_friend[i].animBoom]);
-        break;
-        */
-        default:
-        gb.display.drawBitmap(coordx,coordy,boom[building_friend[i].animBoom]);
         break;
       }
     }    
@@ -283,15 +314,14 @@ void outpt_animBoom(){
       if(mobilUnit_hostile[i].life==0 && mobilUnit_hostile[i].animBoom<12){
         coordx=fnctn_lndscapeXpos(building_hostile[i].x_world)+building_hostile[i].width-4;
         coordy=fnctn_lndscapeYpos(building_hostile[i].y_world)+building_hostile[i].height-6;
-        switch(mobilUnit_hostile[i].sprite){
-          case 1: 
+        if(mobilUnit_hostile[i].sprite==1){ 
           outpt_soundfx(1);
           gb.display.drawBitmap(coordx+5    ,coordy-3  ,boom[mobilUnit_hostile[i].animBoom]);
-          break;
         }
       }
     }
   }
+  */
 }
 
 //##################################################################

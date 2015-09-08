@@ -405,26 +405,27 @@ void fnctn_initLevel(){
 
     if(difficulty>0){
       //mobile ennemies
-      mobilUnit_hostile[0].x_world=572; mobilUnit_hostile[0].y_world=123;   mobilUnit_hostile[0].batiment=1;  //infantry
-      mobilUnit_hostile[1].x_world=309; mobilUnit_hostile[1].y_world=166;   mobilUnit_hostile[1].batiment=3;
-      mobilUnit_hostile[2].x_world=294; mobilUnit_hostile[2].y_world=191;   mobilUnit_hostile[2].batiment=3;
-      mobilUnit_hostile[3].x_world=586; mobilUnit_hostile[3].y_world=275;   mobilUnit_hostile[3].batiment=4;
-      mobilUnit_hostile[4].x_world=579; mobilUnit_hostile[4].y_world=300;   mobilUnit_hostile[4].batiment=4;
-      mobilUnit_hostile[5].x_world=366; mobilUnit_hostile[5].y_world=455;   mobilUnit_hostile[5].batiment=5;
-      mobilUnit_hostile[6].x_world=389; mobilUnit_hostile[6].y_world=483;   mobilUnit_hostile[6].batiment=5;
-      mobilUnit_hostile[7].x_world=617; mobilUnit_hostile[7].y_world=520;   mobilUnit_hostile[7].batiment=6;
-      mobilUnit_hostile[8].x_world=610; mobilUnit_hostile[8].y_world=541;   mobilUnit_hostile[8].batiment=6;
-      mobilUnit_hostile[9].x_world=550; mobilUnit_hostile[9].y_world=535;   mobilUnit_hostile[9].batiment=7;
-      mobilUnit_hostile[10].x_world=544; mobilUnit_hostile[10].y_world=558; mobilUnit_hostile[10].batiment=7;
-      mobilUnit_hostile[11].x_world=519; mobilUnit_hostile[11].y_world=592; mobilUnit_hostile[11].batiment=8;
-      mobilUnit_hostile[12].x_world=528; mobilUnit_hostile[12].y_world=603; mobilUnit_hostile[12].batiment=8;
-      mobilUnit_hostile[13].x_world=93;  mobilUnit_hostile[13].y_world=586; mobilUnit_hostile[13].batiment=2;
-      mobilUnit_hostile[14].x_world=345; mobilUnit_hostile[14].y_world=540; mobilUnit_hostile[14].batiment=2;
-      mobilUnit_hostile[15].x_world=379; mobilUnit_hostile[15].y_world=23;   mobilUnit_hostile[0].batiment=18;  //tank
-      mobilUnit_hostile[16].x_world=73;  mobilUnit_hostile[16].y_world=284;  mobilUnit_hostile[0].batiment=17;
-      mobilUnit_hostile[17].x_world=411; mobilUnit_hostile[17].y_world=398;  mobilUnit_hostile[0].batiment=19;
-      mobilUnit_hostile[18].x_world=279; mobilUnit_hostile[18].y_world=544;  mobilUnit_hostile[0].batiment=20;
-      mobilUnit_hostile[19].x_world=576; mobilUnit_hostile[19].y_world=531;  mobilUnit_hostile[0].batiment=20;
+      mobilUnit_hostile[0].x_world=154; mobilUnit_hostile[0].y_world=28;    mobilUnit_hostile[0].batiment=3;  //infantry
+      mobilUnit_hostile[1].x_world=131; mobilUnit_hostile[1].y_world=49;    mobilUnit_hostile[1].batiment=3;
+      mobilUnit_hostile[2].x_world=117; mobilUnit_hostile[2].y_world=79;    mobilUnit_hostile[2].batiment=1;
+      mobilUnit_hostile[3].x_world=65;  mobilUnit_hostile[3].y_world=120;   mobilUnit_hostile[3].batiment=1;
+      mobilUnit_hostile[4].x_world=405; mobilUnit_hostile[4].y_world=32;    mobilUnit_hostile[4].batiment=4;
+      mobilUnit_hostile[5].x_world=586; mobilUnit_hostile[5].y_world=70;    mobilUnit_hostile[5].batiment=2;
+      mobilUnit_hostile[6].x_world=521; mobilUnit_hostile[6].y_world=100;   mobilUnit_hostile[6].batiment=2;
+      mobilUnit_hostile[7].x_world=590; mobilUnit_hostile[7].y_world=136;   mobilUnit_hostile[7].batiment=2;      
+      mobilUnit_hostile[8].x_world=347; mobilUnit_hostile[8].y_world=128;   mobilUnit_hostile[8].batiment=5;
+      mobilUnit_hostile[9].x_world=406; mobilUnit_hostile[9].y_world=155;   mobilUnit_hostile[9].batiment=5;
+      mobilUnit_hostile[10].x_world=226; mobilUnit_hostile[10].y_world=252; mobilUnit_hostile[10].batiment=6;
+      mobilUnit_hostile[11].x_world=279; mobilUnit_hostile[11].y_world=280; mobilUnit_hostile[11].batiment=6;
+      mobilUnit_hostile[12].x_world=404; mobilUnit_hostile[12].y_world=405; mobilUnit_hostile[12].batiment=7;
+      mobilUnit_hostile[13].x_world=101; mobilUnit_hostile[13].y_world=534; mobilUnit_hostile[13].batiment=8;
+      mobilUnit_hostile[14].x_world=145; mobilUnit_hostile[14].y_world=597; mobilUnit_hostile[14].batiment=8;
+      
+      mobilUnit_hostile[15].x_world=36;  mobilUnit_hostile[15].y_world=47;   mobilUnit_hostile[0].batiment=17;  //tank
+      mobilUnit_hostile[16].x_world=84;  mobilUnit_hostile[16].y_world=479;  mobilUnit_hostile[0].batiment=18;
+      mobilUnit_hostile[17].x_world=300; mobilUnit_hostile[17].y_world=373;  mobilUnit_hostile[0].batiment=19;
+      mobilUnit_hostile[18].x_world=462; mobilUnit_hostile[18].y_world=68;   mobilUnit_hostile[0].batiment=20;
+      mobilUnit_hostile[19].x_world=435; mobilUnit_hostile[19].y_world=475;  mobilUnit_hostile[0].batiment=17;
       for(i=0;i<20;i++){
         mobilUnit_hostile[i].animBoom=0;
         mobilUnit_hostile[i].fireTimer=0;  

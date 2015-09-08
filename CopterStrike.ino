@@ -31,7 +31,7 @@ extern const byte HUD[];
 
 extern const byte helix[4][8];
 extern const byte impact[3][10];
-extern const byte boom[12][14];
+extern const byte boom[12][13];
 
 
 extern const byte copterShadow[];
