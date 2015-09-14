@@ -746,80 +746,61 @@ void fnctn_checkLanding(){
   }
 
   if(player.isLanding==1 && player.altitude==0){
-    switch(lvl){
-      case 0:
-        for(i=0;i<nbHeliport;i++){
-          if(player.x_world>bkgrnd[i].x_world   && player.x_world<bkgrnd[i].x_world+bkgrnd[i].width     && player.y_world>bkgrnd[i].y_world     && player.y_world<bkgrnd[i].y_world+bkgrnd[i].height){
-            switch(i){
-              case 0: 
-              if(destroyedBuildings==nbBuilding_Hostile){
-                outpt_Congratulation();
-              }else{             
-                if(player.life==MAXLIFE && player.fuel==MAXFUEL){player.isLanding=0;}
-                else{
-                  if(player.life<MAXLIFE){player.life++;} if(player.fuel<MAXFUEL){player.fuel++;} 
-                  if(player.life==MAXLIFE && player.fuel==MAXFUEL){
-                    if(money<1000){money = 0;}else{money = money-800;}
-                  }
-                }
-              
-              } break;
-              
-              case 1: 
-              if(player.life==MAXLIFE){player.isLanding=0;}
-              else{
-                if(player.life<MAXLIFE){player.life++;}
-                if(player.life==MAXLIFE){
-                  if(money<750){money = 0;}else{money = money-750;}
-                }
-              } break;
-              
-              case 2: 
-              if(player.fuel==MAXFUEL){player.isLanding=0;}
-              else{
-                if(player.fuel<MAXFUEL){player.fuel++;}
-                if(player.fuel==MAXFUEL){
-                  if(money<750){money = 0;}else{money = money-150;}
-                }
-              } break;
-              
-              case 3: 
-              if(player.life==MAXLIFE){player.isLanding=0;}
-              else{
-                if(player.life<MAXLIFE){player.life++;}
-                if(player.life==MAXLIFE){
-                  if(money<750){money = 0;}else{money = money-750;}
-                }
-              } break;
-              
-              case 4: 
-              if(player.fuel==MAXFUEL){player.isLanding=0;}
-              else{
-                if(player.fuel<MAXFUEL){player.fuel++;}
-                if(player.fuel==MAXFUEL){
-                  if(money<750){money = 0;}else{money = money-150;}
-                }
-              } break;
+    for(i=0;i<nbHeliport;i++){
+      if(player.x_world>bkgrnd[i].x_world   && player.x_world<bkgrnd[i].x_world+bkgrnd[i].width     && player.y_world>bkgrnd[i].y_world     && player.y_world<bkgrnd[i].y_world+bkgrnd[i].height){
+        switch(i){
+          case 0: 
+          if(destroyedBuildings==nbBuilding_Hostile){
+            outpt_Congratulation();
+          }else{             
+            if(player.life==MAXLIFE && player.fuel==MAXFUEL){player.isLanding=0;}
+            else{
+              if(player.life<MAXLIFE){player.life++;} if(player.fuel<MAXFUEL){player.fuel++;} 
+              if(player.life==MAXLIFE && player.fuel==MAXFUEL){
+                if(money<1000){money = 0;}else{money = money-800;}
+              }
             }
-          }
-        }
-      break;
-
-      case 1:
-        for(i=0;i<nbHeliport;i++){
-          if(player.x_world>bkgrnd[i].x_world   && player.x_world<bkgrnd[i].x_world+bkgrnd[i].width     && player.y_world>bkgrnd[i].y_world     && player.y_world<bkgrnd[i].y_world+bkgrnd[i].height){
-            switch(i){
-              case 0: if(player.life==MAXLIFE && player.fuel==MAXFUEL){player.isLanding=0;}else{if(player.life<MAXLIFE){player.life++;} if(player.fuel<MAXFUEL){player.fuel++;}} break;
-              case 1: if(player.life==MAXLIFE){player.isLanding=0;}else{if(player.life<MAXLIFE){player.life++;}} break;
-              case 2: if(player.fuel==MAXFUEL){player.isLanding=0;}else{if(player.fuel<MAXFUEL){player.fuel++;}} break;
-              case 3: if(player.life==MAXLIFE){player.isLanding=0;}else{if(player.life<MAXLIFE){player.life++;}} break;
-              case 4: if(player.fuel==MAXFUEL){player.isLanding=0;}else{if(player.fuel<MAXFUEL){player.fuel++;}} break;
+          
+          } break;
+          
+          case 1: 
+          if(player.life==MAXLIFE){player.isLanding=0;}
+          else{
+            if(player.life<MAXLIFE){player.life++;}
+            if(player.life==MAXLIFE){
+              if(money<750){money = 0;}else{money = money-750;}
             }
-          }
+          } break;
+          
+          case 2: 
+          if(player.fuel==MAXFUEL){player.isLanding=0;}
+          else{
+            if(player.fuel<MAXFUEL){player.fuel++;}
+            if(player.fuel==MAXFUEL){
+              if(money<750){money = 0;}else{money = money-150;}
+            }
+          } break;
+          
+          case 3: 
+          if(player.life==MAXLIFE){player.isLanding=0;}
+          else{
+            if(player.life<MAXLIFE){player.life++;}
+            if(player.life==MAXLIFE){
+              if(money<750){money = 0;}else{money = money-750;}
+            }
+          } break;
+          
+          case 4: 
+          if(player.fuel==MAXFUEL){player.isLanding=0;}
+          else{
+            if(player.fuel<MAXFUEL){player.fuel++;}
+            if(player.fuel==MAXFUEL){
+              if(money<750){money = 0;}else{money = money-150;}
+            }
+          } break;
         }
-      break;
-    }  
-    
+      }
+    } 
   } 
 }
 
