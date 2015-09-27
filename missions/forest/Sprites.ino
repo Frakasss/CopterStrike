@@ -154,5 +154,9 @@ const byte* destroy[]={
   Friend_basecamp,      //1
   Friend_fuel,          //2
   Friend_garage,        //3
+  Forest_Village_destr, //5
+  Ennemy_bunker_destr,  //6
+  Ennemy_camp_destr,    //7
+  Ennemy_tour_destr     //8
 };
 
