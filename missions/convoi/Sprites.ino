@@ -105,10 +105,10 @@ const byte* sprites[]={
   Friend_fuel,          //2
   Friend_garage,        //3
   Desert_village,       //4
-  Ennemy_bunker,        //6
-  Ennemy_camp,          //7
-  Ennemy_tour,          //8
-  Desert_oasis,         //9
+  Ennemy_bunker,        //5
+  Ennemy_camp,          //6
+  Ennemy_tour,          //7
+  Desert_oasis,         //8
 };
 
 const byte* destroy[]={

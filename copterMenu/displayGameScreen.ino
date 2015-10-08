@@ -38,12 +38,14 @@ void displayGameScreen() {
         currentSlide %= slideNumber;
         drawSlide(currentSlide);
         scrollBarTimeLeft = 12;
+          nextMoveG = -1;
       } else {
         if (gb.buttons.pressed(BTN_DOWN) || (gb.buttons.states[BTN_DOWN] > 10 && gb.buttons.repeat(BTN_DOWN, 3)))  {
           currentSlide ++;
           currentSlide %= slideNumber;
           drawSlide(currentSlide);
           scrollBarTimeLeft = 12;
+          nextMoveG = -1;
         }
       }
 
@@ -80,6 +82,7 @@ void displayGameScreen() {
           gb.display.fillRect(LCDWIDTH - 5, 7, 5, LCDHEIGHT - 7 - 7);
           gb.display.setColor(BLACK);
           drawSlide(currentSlide);
+          nextMoveG = -1;
         } else { //draw the scrollbar
           gb.display.setColor(WHITE);
           gb.display.fillRect(LCDWIDTH - 5, 7, 5, LCDHEIGHT - 7 - 7);

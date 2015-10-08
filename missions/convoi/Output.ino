@@ -160,7 +160,7 @@ void outpt_drawHUD(){
     }
     
     gb.display.fillRect(49,2,player.life/(MAXLIFE/10),2); //life
-    gb.display.fillRect(29,2,Camion.life/(240/10),2); //life Camion
+    gb.display.fillRect(29,2,Camion.life/(MAX_LIFE_CAM/10),2); //life Camion
     gb.display.fillRect(66,2,player.fuel/(MAXFUEL/10),2); //fuel
   
   
@@ -296,7 +296,8 @@ void outpt_drawMobile_Hostile(){
     if(mobilUnit_hostile[i].life> 0 || (mobilUnit_hostile[i].animBoom<8) || (mobilUnit_hostile[i].animBoom<24 && mobilUnit_hostile[i].animBoom%4==2)){
       coordx = fnctn_lndscapeXpos(mobilUnit_hostile[i].x_world);
       coordy = fnctn_lndscapeYpos(mobilUnit_hostile[i].y_world);
-      if(coordx<SCREENWIDTH+20  && coordx>0-mobilUnit_hostile[i].width-20   && coordy<SCREENHEIGHT+20    && coordy>0-mobilUnit_hostile[i].height-20){fnctn_moveunit(i);}
+      fnctn_moveunit(i);
+      //if(coordx<SCREENWIDTH+20  && coordx>0-mobilUnit_hostile[i].width-20   && coordy<SCREENHEIGHT+20    && coordy>0-mobilUnit_hostile[i].height-20){fnctn_moveunit(i);}
       if(coordx<SCREENWIDTH  && coordx>0-mobilUnit_hostile[i].width   && coordy<SCREENHEIGHT    && coordy>0-mobilUnit_hostile[i].height){
         if(mobilUnit_hostile[i].sprite==0){
           if(mobilUnit_hostile[i].life> 0){
@@ -355,7 +356,15 @@ void outpt_draw_route()
           gb.display.drawBitmap(coordx,coordy, virage4);
         break;
         case 6 :
-          gb.display.drawBitmap(coordx,coordy, routeExplose);
+          if(currentCheckPoint<7){
+            gb.display.drawBitmap(coordx,coordy, roudeH);
+          }else if(cptExplosion<TEMP_EXPOLOSION) {
+            uint8_t index = (uint8_t) (cptExplosion/NB_FRAME_EXPLOSION);
+            gb.display.drawBitmap(coordx,(coordy - 16), explosion[index]);
+          }else {
+            gb.display.drawBitmap(coordx,coordy, routeExplose);  
+          }
+        
         break;
       }
     }

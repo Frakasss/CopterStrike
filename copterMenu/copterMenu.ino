@@ -41,7 +41,6 @@ B11111111,B11111111,B11111111,B11111111,B11111111,B11111111,B11111111,B11111111,
 const int chipSelect = 10;
 #include <SdFat.h> // requires sdfat, get it at https://github.com/greiman/SdFat
 
-#include <EEPROM.h>
 #include <avr/pgmspace.h>
 #include <SPI.h>
 #include <Gamebuino.h>
@@ -62,8 +61,6 @@ int numberOfPages;
 int selectedFile;
 int selectedPage = 0;
 int prevSelectedPage = 0;
-#define PAGE_W 4
-#define PAGE_H 2
 #define PAGELENGTH 3
 
 #define TOKENSIZE 5
@@ -166,10 +163,10 @@ void initMenu()
   }
   
   if (nextGameName[0]) {
-    saveeeprom();
+    //saveeeprom();
     saveName();
   }
-  
+  numberOfFiles = 0;
   sd.chdir('/');
   while (file.openNext(sd.vwd(), O_READ)) {
     if (doDispFile()) {
@@ -196,71 +193,21 @@ void loop() {
         displayGameScreen();
         updateList();
       }
-      if (gb.buttons.repeat(BTN_RIGHT, 3)) {
+      gb.display.print(selectedPage);
+      
+      if (gb.buttons.pressed(BTN_RIGHT)) {
         if(selectedPage<(numberOfFiles-1)){
             selectedPage++;
             updateList();  
         }
-            
-        /*cursorPos++;
-        if (cursorPos >= filesOnPage) {
-          cursorPos = 0;
-          selectedPage++;
-          if (selectedPage >= numberOfPages) {
-            selectedPage = 0;
-          }
-        } else {
-          updateCursor();
-        }*/
       }
-      if (gb.buttons.repeat(BTN_DOWN, 3)) {
-        /*cursorPos += PAGE_W;
-        if (cursorPos >= filesOnPage || gb.buttons.repeat(BTN_B, 1)) {
-          cursorPos %= PAGE_W;
-
-          selectedPage++;
-          if (selectedPage >= numberOfPages) {
-            selectedPage = 0;
-          }
-        } else {
-          updateCursor();
-        }*/
-      }
-
-      if (gb.buttons.repeat(BTN_LEFT, 3)) {
+      if (gb.buttons.pressed(BTN_LEFT)) {
         if(selectedPage>0){
            selectedPage--;
            updateList();
         }
-        
-        /*if (cursorPos == 0 ) { // so that we don't have to compare with negative numbers
-          cursorPos = PAGELENGTH - 1; // updating the list will adjust this if on last page
-          if (selectedPage == 0) {
-            selectedPage = numberOfPages; // we will get decreased one after this if-condition anyways
-          }
-          selectedPage--;
-        } else {
-          cursorPos--;
-          updateCursor();
-        }*/
-      }
-      if (gb.buttons.repeat(BTN_UP, 3)) {
-        /*if (cursorPos < PAGE_W || gb.buttons.repeat(BTN_B, 1)) { // so that we don't have to compare with negative numbers
-          cursorPos += (PAGE_W * (PAGE_H - 1)); // updating the list will adjust this if on last page
-          if (selectedPage == 0) {
-            selectedPage = numberOfPages; // we will get decreased one after this if-condition anyways
-          }
-          selectedPage--;
-        } else {
-          cursorPos -= PAGE_W;
-          updateCursor();
-        }*/
       }
 
-      /*if (selectedPage != prevSelectedPage) {
-        updateList();
-        prevSelectedPage = selectedPage;
-      }*/
       // draw the blinking selection box
       gb.display.setColor(BLACK);
       if ((gb.frameCount % 8) >= 4) {
@@ -286,7 +233,7 @@ void loadSelectedFile() {
   // no need to check if the HEX file exists, as we created the thisPageFiles array with searching for hex files
   strcpy(nextGameName, thisPageFiles[cursorPos]);
   saveName();
-  loadeeprom();
+  //loadeeprom();
 
   //show the first slide from the game's inf file while loading
   if(!drawSlideLoad()){

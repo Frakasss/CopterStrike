@@ -170,6 +170,7 @@ void fnctn_initPlayer() {
 //##################################################################
 //##################################################################
 void fnctn_initLevel() {
+  cptExplosion = 0;
   destroyedBuildings = 0;
   money = 0;
   wait_time = WAIT_TIME;
@@ -324,22 +325,24 @@ void fnctn_initLevel() {
 //##################################################################
 //##################################################################
 void fnctn_moveunit(byte i) {
-  if (mobilUnit_hostile[i].life > 0) {
+
+  int dist = (abs(Camion.x_world - mobilUnit_hostile[i].x_world) + abs(Camion.y_world - mobilUnit_hostile[i].y_world));
+  if (mobilUnit_hostile[i].life > 0 && dist<100 && dist>30 ) {
     check02 = 8;
 
-    if (mobilUnit_hostile[i].x_world + (mobilUnit_hostile[i].width / 2) > player.x_world + 10) {
+    if (mobilUnit_hostile[i].x_world + (mobilUnit_hostile[i].width / 2) > Camion.x_world + 10) {
       mobilUnit_hostile[i].x_world--;
       mobilUnit_hostile[i].dir = 4;
       check02 = 4;
     }
 
-    if (mobilUnit_hostile[i].x_world + (mobilUnit_hostile[i].width / 2) < player.x_world - 10) {
+    if (mobilUnit_hostile[i].x_world + (mobilUnit_hostile[i].width / 2) < Camion.x_world - 10) {
       mobilUnit_hostile[i].x_world++;
       mobilUnit_hostile[i].dir = 0;
       check02 = 0;
     }
 
-    if (mobilUnit_hostile[i].y_world + (mobilUnit_hostile[i].height / 2) < player.y_world - 8) {
+    if (mobilUnit_hostile[i].y_world + (mobilUnit_hostile[i].height / 2) < Camion.y_world - 8) {
       mobilUnit_hostile[i].y_world++;
       switch (check02) {
         case 0: mobilUnit_hostile[i].dir = 1; break;
@@ -348,7 +351,7 @@ void fnctn_moveunit(byte i) {
       }
     }
 
-    if (mobilUnit_hostile[i].y_world + (mobilUnit_hostile[i].height / 2) > player.y_world + 8) {
+    if (mobilUnit_hostile[i].y_world + (mobilUnit_hostile[i].height / 2) > Camion.y_world + 8) {
       mobilUnit_hostile[i].y_world--;
       switch (check02) {
         case 0: mobilUnit_hostile[i].dir = 7; break;
@@ -361,6 +364,7 @@ void fnctn_moveunit(byte i) {
 
 //##################################################################
 //##################################################################
+
 void fnctn_initEnnemyFire() {
   //move bullets
   for (j = 0; j < MAXBULLET; j++) {
@@ -377,7 +381,7 @@ void fnctn_initEnnemyFire() {
       }
       bullet[j].distance++;
       if (bullet[j].distance > 30) {
-        building_hostile[bullet[j].shooter].fireTimer = 0;
+        //building_hostile[bullet[j].shooter].fireTimer = 0;
         bullet[j].x_world = 0;
         bullet[j].y_world = 0;
         bullet[j].dir = 0;
@@ -391,7 +395,7 @@ void fnctn_initEnnemyFire() {
     coordx = building_hostile[i].x_world + (building_hostile[i].width / 2);
     coordy = building_hostile[i].y_world + (building_hostile[i].height / 2);
     for (j = 0; j < MAXBULLET; j++) {
-      if (abs(Camion.x_world - coordx) < 75 && abs(Camion.y_world - coordy) < 75 && building_hostile[i].fireTimer < 1 && building_hostile[i].life > 0) {
+      if (building_hostile[i].fireTimer < 1 && abs(Camion.x_world - coordx) < 75 && abs(Camion.y_world - coordy) < 75 &&  building_hostile[i].life > 0) {
         if (bullet[j].distance == 0) {
           building_hostile[i].fireTimer = 20;
           switch (building_hostile[i].sprite) {
@@ -412,7 +416,7 @@ void fnctn_initEnnemyFire() {
           if (Camion.x_world < coordx - 5 && Camion.y_world > coordy + 5)                            {
             bullet[j].dir = 3;
           }
-          if (Camion.x_world < coordx   && Camion.y_world > coordy - 6 && player.y_world - player.altitude < coordy + 6) {
+          if (Camion.x_world < coordx   && Camion.y_world > coordy - 6 && Camion.y_world < coordy + 6) {
             bullet[j].dir = 4;
           }
           if (Camion.x_world < coordx - 5 && Camion.y_world < coordy - 5)                            {
@@ -427,6 +431,43 @@ void fnctn_initEnnemyFire() {
           break;
         }
       }
+      
+      if ( building_hostile[i].fireTimer < 1 && abs(player.x_world - coordx) < 75 && abs(player.y_world - coordy) < 75  && building_hostile[i].life > 0) {
+        if (bullet[j].distance == 0) {
+          building_hostile[i].fireTimer = 20;
+          switch (building_hostile[i].sprite) {
+            case 5 : building_hostile[i].fireTimer = TMPBUNKER; break; //bunker
+            case 7 : building_hostile[i].fireTimer = TMPTOUR; break; //tour
+          }
+          bullet[j].shooter = i;
+          bullet[j].x_world = coordx;
+          bullet[j].y_world = coordy;
+          bullet[j].distance = 1;
+          bullet[j].dir = 0;
+          if (player.x_world > coordx + 5 && player.y_world - player.altitude > coordy + 5)                            {
+            bullet[j].dir = 1;
+          }
+          if (player.x_world > coordx - 6 && player.x_world < coordx + 6 && player.y_world - player.altitude > coordy)   {
+            bullet[j].dir = 2;
+          }
+          if (player.x_world < coordx - 5 && player.y_world - player.altitude > coordy + 5)                            {
+            bullet[j].dir = 3;
+          }
+          if (player.x_world < coordx   && player.y_world - player.altitude > coordy - 6 && player.y_world - player.altitude < coordy + 6) {
+            bullet[j].dir = 4;
+          }
+          if (player.x_world < coordx - 5 && player.y_world - player.altitude < coordy - 5)                            {
+            bullet[j].dir = 5;
+          }
+          if (player.x_world > coordx - 6 && player.x_world < coordx + 6 && player.y_world - player.altitude < coordy - 6) {
+            bullet[j].dir = 6;
+          }
+          if (player.x_world > coordx + 5 && player.y_world - player.altitude < coordy - 5)                            {
+            bullet[j].dir = 7;
+          }
+          break;
+        }
+      }
     }
   }
 
@@ -434,11 +475,52 @@ void fnctn_initEnnemyFire() {
     coordx = mobilUnit_hostile[i].x_world + (mobilUnit_hostile[i].width / 2);
     coordy = mobilUnit_hostile[i].y_world + (mobilUnit_hostile[i].height / 2);
 
-    for (j = 0; j < MAXBULLET; j++) {
+    for (j = 0; j < MAXBULLET; j++) {      
+       if (mobilUnit_hostile[i].fireTimer < 1 && abs(Camion.x_world - coordx) < 75 && abs(Camion.y_world - coordy) < 75 &&  building_hostile[i].life > 0) {
+        if (bullet[j].distance == 0) {      
+          bullet[j].shooter = i;
+          bullet[j].x_world = coordx;
+          bullet[j].y_world = coordy;
+          bullet[j].distance = 1;
+          bullet[j].dir = 0;
+          
+          switch (mobilUnit_hostile[i].sprite) {
+            case 0: //unit
+              mobilUnit_hostile[i].fireTimer = TMPUNIT;
+              bullet[j].dir = 0;
+              if (Camion.x_world > coordx + 5 && Camion.y_world > coordy + 5)                            {
+                bullet[j].dir = 1;
+              }
+              if (Camion.x_world > coordx - 6 && Camion.x_world < coordx + 6 && Camion.y_world > coordy)   {
+                bullet[j].dir = 2;
+              }
+              if (Camion.x_world < coordx - 5 && Camion.y_world > coordy + 5)                            {
+                bullet[j].dir = 3;
+              }
+              if (Camion.x_world < coordx   && Camion.y_world > coordy - 6 && Camion.y_world < coordy + 6) {
+                bullet[j].dir = 4;
+              }
+              if (Camion.x_world < coordx - 5 && Camion.y_world < coordy - 5)                            {
+                bullet[j].dir = 5;
+              }
+              if (Camion.x_world > coordx - 6 && Camion.x_world < coordx + 6 && Camion.y_world < coordy - 6) {
+                bullet[j].dir = 6;
+              }
+              if (Camion.x_world > coordx + 5 && Camion.y_world < coordy - 5)                            {
+                bullet[j].dir = 7;
+              }
 
-      if (abs(player.x_world - coordx) < 75 && abs(player.y_world - coordy) < 75 && mobilUnit_hostile[i].fireTimer < 1 && mobilUnit_hostile[i].life > 0) {
+            case 1: //tank
+              mobilUnit_hostile[i].fireTimer = TMPTANK;
+              bullet[j].dir = mobilUnit_hostile[i].dir;
+              bullet[j].y_world = bullet[j].y_world - 5;
+              break;
+          }
+          break;
+        }
+      }
+      if (mobilUnit_hostile[i].fireTimer < 1 && abs(player.x_world - coordx) < 75 && abs(player.y_world - coordy) < 75 && mobilUnit_hostile[i].life > 0) {
         if (bullet[j].distance == 0) {
-
           bullet[j].shooter = i;
           bullet[j].x_world = coordx;
           bullet[j].y_world = coordy;
@@ -493,12 +575,15 @@ void fnctn_initEnnemyFire() {
 void fnctn_checkEnnemyFire() {
   for (j = 0; j < MAXBULLET; j++) {
 
-    if (player.animDamage == 0) {
+    if (player.animDamage == 0 && bullet[j].distance > 0) {
       //if (gb.collidePointRect(bullet[j].x_world, bullet[j].y_world, player.x_world, player.x_world, 8, 8) )
-      if(bullet[j].x_world>player.x_world-4 && bullet[j].x_world<player.x_world+4 && bullet[j].y_world>player.y_world-player.altitude-6 && bullet[j].y_world<player.y_world-player.altitude+2)
+      if (bullet[j].x_world > player.x_world - 4 && bullet[j].x_world < player.x_world + 4 && bullet[j].y_world > player.y_world - player.altitude - 6 && bullet[j].y_world < player.y_world - player.altitude + 2)
       {
-      if(player.life>0){player.life=player.life -5;}
-      if (player.life <= 0) {
+        //bullet[j].distance = 0;
+        if (player.life > 0) {
+          player.life = player.life - 5;
+        }
+        if (player.life <= 0) {
           player.isCrashing = 1;
         } else {
           player.animDamage = 12;
@@ -506,11 +591,12 @@ void fnctn_checkEnnemyFire() {
         }
       }
     }
-    
+
 
     if (Camion.animDamage == 0) {
+      //bullet[j].distance = 0;
       if (gb.collidePointRect(bullet[j].x_world, bullet[j].y_world, Camion.x_world, Camion.y_world, 14, 14)) {
-      if (Camion.life > 0) {
+        if (Camion.life > 0) {
           Camion.life = Camion.life - 5;
         }
         if (Camion.life <= 0) {
@@ -523,445 +609,450 @@ void fnctn_checkEnnemyFire() {
       }
     }
   }
-  }
+}
 
-  //##################################################################
-  //##################################################################
-  void fnctn_resurection() {
-    for (i = 0; i < 15; i++) {
-      if (mobilUnit_hostile[i].batiment != 0 && mobilUnit_hostile[i].life == 0 && mobilUnit_hostile[i].animBoom == TMPRESURECTION) {
+//##################################################################
+//##################################################################
+void fnctn_resurection() {
+  for (i = 0; i < 15; i++) {
+    if (mobilUnit_hostile[i].batiment != 0 && mobilUnit_hostile[i].life == 0 && mobilUnit_hostile[i].animBoom == TMPRESURECTION) {
 
-        if (mobilUnit_hostile[i].sprite == 0) {
-          if (building_friend[mobilUnit_hostile[i].batiment].life > 0) {
-            mobilUnit_hostile[i].life = 5;
-            mobilUnit_hostile[i].animBoom = 0;
-            mobilUnit_hostile[i].x_world = building_friend[mobilUnit_hostile[i].batiment].x_world + (building_friend[mobilUnit_hostile[i].batiment].width / 2);
-            mobilUnit_hostile[i].y_world = building_friend[mobilUnit_hostile[i].batiment].y_world + (building_friend[mobilUnit_hostile[i].batiment].height / 2);
-          }
-        }
-
-        if (mobilUnit_hostile[i].sprite == 1) {
-          if (building_hostile[mobilUnit_hostile[i].batiment].life > 0) {
-            mobilUnit_hostile[i].life = 30;
-            mobilUnit_hostile[i].animBoom = 0;
-            mobilUnit_hostile[i].x_world = building_hostile[mobilUnit_hostile[i].batiment].x_world + (building_hostile[mobilUnit_hostile[i].batiment].width / 2);
-            mobilUnit_hostile[i].y_world = building_hostile[mobilUnit_hostile[i].batiment].y_world + building_hostile[mobilUnit_hostile[i].batiment].height + 5;
-          }
-        }
-      }
-    }
-  }
-
-  //##################################################################
-  //##################################################################
-  void fnctn_checkPlayerAltitude() {
-    switch (player.isLanding) {
-      case 0: if (player.altitude < MAXALTITUDE && player.isCrashing == 0) {
-          player.altitude++;
-        } break;
-      case 1: if (player.altitude > 0) {
-          player.altitude--;
-        } break;
-    }
-    if (player.isCrashing == 1 && player.altitude > 0) {
-      player.dir = (player.dir + 1) % 8;
-      player.altitude --;
-    }
-  }
-
-
-  //##################################################################
-  //##################################################################
-  void fnctn_checkPlayerFire() {
-    if (player.fire == 1) {
-      switch (player.dir) {
-        case 0 : coordx = player.x_world + 16;  coordy = player.y_world;    break;
-        case 1 : coordx = player.x_world + 8;   coordy = player.y_world + 5;  break;
-        case 2 : coordx = player.x_world;     coordy = player.y_world + 8;  break;
-        case 3 : coordx = player.x_world - 8;   coordy = player.y_world + 5;  break;
-        case 4 : coordx = player.x_world - 16;  coordy = player.y_world;    break;
-        case 5 : coordx = player.x_world - 8;   coordy = player.y_world - 5;  break;
-        case 6 : coordx = player.x_world;     coordy = player.y_world - 8;  break;
-        case 7 : coordx = player.x_world + 8;   coordy = player.y_world - 5;  break;
-      }
-      for (i = 0; i < nbBuilding_Hostile; i++) {
-        if (coordx > building_hostile[i].x_world && coordx < building_hostile[i].x_world + building_hostile[i].width && coordy > building_hostile[i].y_world && coordy < building_hostile[i].y_world + building_hostile[i].height) {
-          if (building_hostile[i].life > 0) {
-            building_hostile[i].life--;
-            if (building_hostile[i].life == 0 && building_hostile[i].animBoom == 0) {
-              destroyedBuildings = destroyedBuildings + 1;
-              switch (building_hostile[i].sprite) {
-                case 8: money = money + 250; break;  //tour
-                case 6: money = money + 1000; break; //bunker
-              }
-            }
-          }
-        }
-      }
-      for (i = 0; i < nbBuilding_Friend; i++) {
-        if (coordx > building_friend[i].x_world && coordx < building_friend[i].x_world + building_friend[i].width && coordy > building_friend[i].y_world && coordy < building_friend[i].y_world + building_friend[i].height) {
-          if (building_friend[i].life > 0) {
-            building_friend[i].life--;
-            if (building_friend[i].life == 0 && building_friend[i].animBoom == 0) {
-              switch (building_friend[i].sprite) {
-                case 4: money = money + 200; break; //village
-                case 7: money = money + 350; break; //camp
-                case 9: money = money + 200; break; //village
-              }
-            }
-          }
+      if (mobilUnit_hostile[i].sprite == 0) {
+        if (building_friend[mobilUnit_hostile[i].batiment].life > 0) {
+          mobilUnit_hostile[i].life = 5;
+          mobilUnit_hostile[i].animBoom = 0;
+          mobilUnit_hostile[i].x_world = building_friend[mobilUnit_hostile[i].batiment].x_world + (building_friend[mobilUnit_hostile[i].batiment].width / 2);
+          mobilUnit_hostile[i].y_world = building_friend[mobilUnit_hostile[i].batiment].y_world + (building_friend[mobilUnit_hostile[i].batiment].height / 2);
         }
       }
 
-      for (i = 0; i < 20; i++) {
-        if (coordx > mobilUnit_hostile[i].x_world && coordx < mobilUnit_hostile[i].x_world + mobilUnit_hostile[i].width && coordy > mobilUnit_hostile[i].y_world && coordy < mobilUnit_hostile[i].y_world + mobilUnit_hostile[i].height) {
-          if (mobilUnit_hostile[i].life > 0) {
-            mobilUnit_hostile[i].life--;
-            if (mobilUnit_hostile[i].life == 0 && mobilUnit_hostile[i].animBoom == 0) {
-              switch (building_friend[i].sprite) {
-                case 0: money = money + 50; break;  //unit
-                case 1: money = money + 100; break; //tank
-              }
-            }
-
-          }
+      if (mobilUnit_hostile[i].sprite == 1) {
+        if (building_hostile[mobilUnit_hostile[i].batiment].life > 0) {
+          mobilUnit_hostile[i].life = 30;
+          mobilUnit_hostile[i].animBoom = 0;
+          mobilUnit_hostile[i].x_world = building_hostile[mobilUnit_hostile[i].batiment].x_world + (building_hostile[mobilUnit_hostile[i].batiment].width / 2);
+          mobilUnit_hostile[i].y_world = building_hostile[mobilUnit_hostile[i].batiment].y_world + building_hostile[mobilUnit_hostile[i].batiment].height + 5;
         }
       }
     }
   }
+}
 
-  //##################################################################
-  //##################################################################
-  void fnctn_checkLanding() {
-    if (player.vSpeed == 0    && player.hSpeed == 0   && player.isLanding == 0) {
-
-      for (i = 0; i < nbHeliport; i++) {
-        if (player.x_world > bkgrnd[i].x_world   && player.x_world < bkgrnd[i].x_world + bkgrnd[i].width     && player.y_world > bkgrnd[i].y_world     && player.y_world < bkgrnd[i].y_world + bkgrnd[i].height) {
-          switch (i) {
-            case 0: if (player.life < MAXLIFE - 1 || player.fuel < MAXFUEL - 1) {
-                player.isLanding = 1;
-              } break;
-            case 1: if (player.life < MAXLIFE - 1) {
-                player.isLanding = 1;
-              } break;
-            case 2: if (player.fuel < MAXFUEL - 1) {
-                player.isLanding = 1;
-              } break;
-            case 3: if (player.life < MAXLIFE - 1) {
-                player.isLanding = 1;
-              } break;
-            case 4: if (player.fuel < MAXFUEL - 1) {
-                player.isLanding = 1;
-              } break;
-          }
-        }
-      }
-    }
-
-    if (player.isLanding == 1 && player.altitude == 0) {
-      for (i = 0; i < nbHeliport; i++) {
-        if (player.x_world > bkgrnd[i].x_world   && player.x_world < bkgrnd[i].x_world + bkgrnd[i].width     && player.y_world > bkgrnd[i].y_world     && player.y_world < bkgrnd[i].y_world + bkgrnd[i].height) {
-          switch (i) {
-            case 0:
-              if (convoiSecuriser) {
-                outpt_Congratulation();
-              } else {
-                if (player.life == MAXLIFE && player.fuel == MAXFUEL) {
-                  player.isLanding = 0;
-                }
-                else {
-                  if (player.life < MAXLIFE) {
-                    player.life++;
-                  } if (player.fuel < MAXFUEL) {
-                    player.fuel++;
-                  }
-                  if (player.life == MAXLIFE && player.fuel == MAXFUEL) {
-                    if (money < 1000) {
-                      money = 0;
-                    } else {
-                      money = money - 800;
-                    }
-                  }
-                }
-
-              } break;
-
-            case 1:
-              if (player.life == MAXLIFE) {
-                player.isLanding = 0;
-              }
-              else {
-                if (player.life < MAXLIFE) {
-                  player.life++;
-                }
-                if (player.life == MAXLIFE) {
-                  if (money < 750) {
-                    money = 0;
-                  } else {
-                    money = money - 750;
-                  }
-                }
-              } break;
-
-            case 2:
-              if (player.fuel == MAXFUEL) {
-                player.isLanding = 0;
-              }
-              else {
-                if (player.fuel < MAXFUEL) {
-                  player.fuel++;
-                }
-                if (player.fuel == MAXFUEL) {
-                  if (money < 750) {
-                    money = 0;
-                  } else {
-                    money = money - 150;
-                  }
-                }
-              } break;
-
-            case 3:
-              if (player.life == MAXLIFE) {
-                player.isLanding = 0;
-              }
-              else {
-                if (player.life < MAXLIFE) {
-                  player.life++;
-                }
-                if (player.life == MAXLIFE) {
-                  if (money < 750) {
-                    money = 0;
-                  } else {
-                    money = money - 750;
-                  }
-                }
-              } break;
-
-            case 4:
-              if (player.fuel == MAXFUEL) {
-                player.isLanding = 0;
-              }
-              else {
-                if (player.fuel < MAXFUEL) {
-                  player.fuel++;
-                }
-                if (player.fuel == MAXFUEL) {
-                  if (money < 750) {
-                    money = 0;
-                  } else {
-                    money = money - 150;
-                  }
-                }
-              } break;
-          }
-        }
-      }
-    }
+//##################################################################
+//##################################################################
+void fnctn_checkPlayerAltitude() {
+  switch (player.isLanding) {
+    case 0: if (player.altitude < MAXALTITUDE && player.isCrashing == 0) {
+        player.altitude++;
+      } break;
+    case 1: if (player.altitude > 0) {
+        player.altitude--;
+      } break;
   }
-
-  //##################################################################
-  //##################################################################
-  void fnctn_checkFuel() {
-    if (player.altitude > 0) {
-      player.fuelCheck = (player.fuelCheck + 1) % 100;
-      if (player.fuelCheck == 0 && player.fuel > 0) {
-        player.fuel--;
-      }
-      if (player.fuel == 0) {
-        player.isCrashing = 1;
-        player.isLanding = 1;
-      }
-    }
+  if (player.isCrashing == 1 && player.altitude > 0) {
+    player.dir = (player.dir + 1) % 8;
+    player.altitude --;
   }
+}
 
-  //##################################################################
-  //##################################################################
-  byte fnctn_playerXpos(int x) {
-    if (x < SCREENWIDTH / 2)                                 {
-      return x;
-    }
-    if (x >= SCREENWIDTH / 2 && x <= LEVELWIDTH - SCREENWIDTH / 2) {
-      return SCREENWIDTH / 2;
-    }
-    if (x > LEVELWIDTH - SCREENWIDTH / 2)                      {
-      return (SCREENWIDTH) - (LEVELWIDTH - x);
-    }
-  }
 
-  //##################################################################
-  //##################################################################
-  byte fnctn_playerYpos(int y) {
-    if (y < SCREENHEIGHT / 2 + VERTALIGNMENT)                                                {
-      return y;
+//##################################################################
+//##################################################################
+void fnctn_checkPlayerFire() {
+  if (player.fire == 1) {
+    switch (player.dir) {
+      case 0 : coordx = player.x_world + 16;  coordy = player.y_world;    break;
+      case 1 : coordx = player.x_world + 8;   coordy = player.y_world + 5;  break;
+      case 2 : coordx = player.x_world;     coordy = player.y_world + 8;  break;
+      case 3 : coordx = player.x_world - 8;   coordy = player.y_world + 5;  break;
+      case 4 : coordx = player.x_world - 16;  coordy = player.y_world;    break;
+      case 5 : coordx = player.x_world - 8;   coordy = player.y_world - 5;  break;
+      case 6 : coordx = player.x_world;     coordy = player.y_world - 8;  break;
+      case 7 : coordx = player.x_world + 8;   coordy = player.y_world - 5;  break;
     }
-    if (y >= SCREENHEIGHT / 2 + VERTALIGNMENT && y <= LEVELHEIGHT - SCREENHEIGHT / 2 + VERTALIGNMENT) {
-      return SCREENHEIGHT / 2 + VERTALIGNMENT;
-    }
-    if (y > LEVELHEIGHT - SCREENHEIGHT / 2 + VERTALIGNMENT)                                    {
-      return (SCREENHEIGHT) - (LEVELHEIGHT - y);
-    }
-  }
-
-  //##################################################################
-  //##################################################################
-  int fnctn_backgrndXpos(int x) {
-    if (player.x_world < SCREENWIDTH / 2)                                                {
-      return (x % SPRITESIZE + SPRITESIZE) % SPRITESIZE;
-    }
-    if (player.x_world >= SCREENWIDTH / 2 && player.x_world <= LEVELWIDTH - SCREENWIDTH / 2)   {
-      return ((x - (player.x_world - SCREENWIDTH / 2)) % SPRITESIZE + SPRITESIZE) % SPRITESIZE;
-    }
-    if (player.x_world > LEVELWIDTH - SCREENWIDTH / 2)                                     {
-      return (((SCREENWIDTH) - (LEVELWIDTH - x)) % SPRITESIZE + SPRITESIZE) % SPRITESIZE;
-    }
-  }
-
-  //##################################################################
-  //##################################################################
-  int fnctn_backgrndYpos(int y) {
-    if (player.y_world < SCREENHEIGHT / 2 + VERTALIGNMENT)                                                             {
-      return (y % SPRITESIZE + SPRITESIZE) % SPRITESIZE;
-    }
-    if (player.y_world >= SCREENHEIGHT / 2 + VERTALIGNMENT && player.y_world <= LEVELHEIGHT - SCREENHEIGHT / 2 + VERTALIGNMENT) {
-      return ((y - (player.y_world - (VERTALIGNMENT + SCREENHEIGHT / 2))) % SPRITESIZE + SPRITESIZE) % SPRITESIZE;
-    }
-    if (player.y_world > LEVELHEIGHT - SCREENHEIGHT / 2 + VERTALIGNMENT)                                                 {
-      return (((SCREENHEIGHT) - (LEVELHEIGHT - y)) % SPRITESIZE + SPRITESIZE) % SPRITESIZE;
-    }
-  }
-
-  //##################################################################
-  //##################################################################
-  int fnctn_lndscapeXpos(int x) {
-    if (player.x_world < SCREENWIDTH / 2)                                                {
-      return x;
-    }
-    if (player.x_world >= SCREENWIDTH / 2 && player.x_world <= LEVELWIDTH - SCREENWIDTH / 2)   {
-      return (x - (player.x_world - SCREENWIDTH / 2));
-    }
-    if (player.x_world > LEVELWIDTH - SCREENWIDTH / 2)                                     {
-      return ((SCREENWIDTH) - (LEVELWIDTH - x));
-    }
-  }
-
-  //##################################################################
-  //##################################################################
-  int fnctn_lndscapeYpos(int y) {
-    if (player.y_world < SCREENHEIGHT / 2 + VERTALIGNMENT)                                                             {
-      return y;
-    }
-    if (player.y_world >= SCREENHEIGHT / 2 + VERTALIGNMENT && player.y_world <= LEVELHEIGHT - SCREENHEIGHT / 2 + VERTALIGNMENT) {
-      return (y - (player.y_world - (VERTALIGNMENT + SCREENHEIGHT / 2)));
-    }
-    if (player.y_world > LEVELHEIGHT - SCREENHEIGHT / 2 + VERTALIGNMENT)                                                 {
-      return ((SCREENHEIGHT) - (LEVELHEIGHT - y));
-    }
-  }
-
-  //##################################################################
-  //##################################################################
-  void fnctn_animation() {
-    if (player.fuel > 0 && player.altitude > 0) {
-      player.animHelix = (player.animHelix + 1) % 4;
-    }
-    cptAnim = (cptAnim + 1) % 50;
-    if (player.isCrashing == 1 && player.altitude == 0 && player.animBoom < 11) {
-      player.animBoom++;
-    }
-    if (player.animDamage > 0) {
-      player.animDamage--;
-    }
-    if (Camion.animDamage > 0) {
-      Camion.animDamage--;
-    }
-
     for (i = 0; i < nbBuilding_Hostile; i++) {
-      if (building_hostile[i].life == 0 && building_hostile[i].animBoom < 12) {
-        building_hostile[i].animBoom++;
-      }
-      if (building_hostile[i].fireTimer > 0) {
-        building_hostile[i].fireTimer--;
+      if (coordx > building_hostile[i].x_world && coordx < building_hostile[i].x_world + building_hostile[i].width && coordy > building_hostile[i].y_world && coordy < building_hostile[i].y_world + building_hostile[i].height) {
+        if (building_hostile[i].life > 0) {
+          building_hostile[i].life--;
+          if (building_hostile[i].life == 0 && building_hostile[i].animBoom == 0) {
+            destroyedBuildings = destroyedBuildings + 1;
+            switch (building_hostile[i].sprite) {
+              case 8: money = money + 250; break;  //tour
+              case 6: money = money + 1000; break; //bunker
+            }
+          }
+        }
       }
     }
-
     for (i = 0; i < nbBuilding_Friend; i++) {
-      if (building_friend[i].life == 0 && building_friend[i].animBoom < 12) {
-        building_friend[i].animBoom++;
+      if (coordx > building_friend[i].x_world && coordx < building_friend[i].x_world + building_friend[i].width && coordy > building_friend[i].y_world && coordy < building_friend[i].y_world + building_friend[i].height) {
+        if (building_friend[i].life > 0) {
+          building_friend[i].life--;
+          if (building_friend[i].life == 0 && building_friend[i].animBoom == 0) {
+            switch (building_friend[i].sprite) {
+              case 4: money = money + 200; break; //village
+              case 7: money = money + 350; break; //camp
+              case 9: money = money + 200; break; //village
+            }
+          }
+        }
       }
     }
 
     for (i = 0; i < 20; i++) {
-      if (mobilUnit_hostile[i].life == 0 && mobilUnit_hostile[i].animBoom < TMPRESURECTION + 1) {
-        mobilUnit_hostile[i].animBoom++;
-      }
-      if (mobilUnit_hostile[i].fireTimer > 0) {
-        mobilUnit_hostile[i].fireTimer--;
+      if (coordx > mobilUnit_hostile[i].x_world && coordx < mobilUnit_hostile[i].x_world + mobilUnit_hostile[i].width && coordy > mobilUnit_hostile[i].y_world && coordy < mobilUnit_hostile[i].y_world + mobilUnit_hostile[i].height) {
+        if (mobilUnit_hostile[i].life > 0) {
+          mobilUnit_hostile[i].life--;
+          if (mobilUnit_hostile[i].life == 0 && mobilUnit_hostile[i].animBoom == 0) {
+            switch (building_friend[i].sprite) {
+              case 0: money = money + 50; break;  //unit
+              case 1: money = money + 100; break; //tank
+            }
+          }
+
+        }
       }
     }
+  }
+}
 
+//##################################################################
+//##################################################################
+void fnctn_checkLanding() {
+  if (player.vSpeed == 0    && player.hSpeed == 0   && player.isLanding == 0) {
+
+    for (i = 0; i < nbHeliport; i++) {
+      if (player.x_world > bkgrnd[i].x_world   && player.x_world < bkgrnd[i].x_world + bkgrnd[i].width     && player.y_world > bkgrnd[i].y_world     && player.y_world < bkgrnd[i].y_world + bkgrnd[i].height) {
+        switch (i) {
+          case 0: if (player.life < MAXLIFE - 1 || player.fuel < MAXFUEL - 1) {
+              player.isLanding = 1;
+            } break;
+          case 1: if (player.life < MAXLIFE - 1) {
+              player.isLanding = 1;
+            } break;
+          case 2: if (player.fuel < MAXFUEL - 1) {
+              player.isLanding = 1;
+            } break;
+          case 3: if (player.life < MAXLIFE - 1) {
+              player.isLanding = 1;
+            } break;
+          case 4: if (player.fuel < MAXFUEL - 1) {
+              player.isLanding = 1;
+            } break;
+        }
+      }
+    }
   }
 
-  //##################################################################
-  //##################################################################
-  void updateFriendMobile() {
-    //{camionD,camionHD,camionBD,camionG,camionHG,camionBG,camionH,camionB}
-    if (currentCheckPoint < NB_CHECK_POINT) {
+  if (player.isLanding == 1 && player.altitude == 0) {
+    for (i = 0; i < nbHeliport; i++) {
+      if (player.x_world > bkgrnd[i].x_world   && player.x_world < bkgrnd[i].x_world + bkgrnd[i].width     && player.y_world > bkgrnd[i].y_world     && player.y_world < bkgrnd[i].y_world + bkgrnd[i].height) {
+        switch (i) {
+          case 0:
+            if (convoiSecuriser) {
+                endGameOK();
+            } else {
+              if (player.life == MAXLIFE && player.fuel == MAXFUEL) {
+                player.isLanding = 0;
+              }
+              else {
+                if (player.life < MAXLIFE) {
+                  player.life++;
+                } if (player.fuel < MAXFUEL) {
+                  player.fuel++;
+                }
+                if (player.life == MAXLIFE && player.fuel == MAXFUEL) {
+                  if (money < 1000) {
+                    money = 0;
+                  } else {
+                    money = money - 800;
+                  }
+                }
+              }
 
-      int checkPoint_x = pgm_read_word_near(&CheckPoint[currentCheckPoint].x_world);
-      int checkPoint_y = pgm_read_word_near(&CheckPoint[currentCheckPoint].y_world);
-      int dist = sqrt(pow(checkPoint_x - Camion.x_world, 2) + pow(checkPoint_y - Camion.y_world, 2));
+            } break;
 
-      if (dist < 3) {
-        if (currentCheckPoint == 5 || currentCheckPoint == 7 || currentCheckPoint == 10) {
-          wait_time--;
-          if (wait_time == 0) {
-            wait_time = WAIT_TIME;
-            currentCheckPoint++;
-          }
-        } else {
+          case 1:
+            if (player.life == MAXLIFE) {
+              player.isLanding = 0;
+            }
+            else {
+              if (player.life < MAXLIFE) {
+                player.life++;
+              }
+              if (player.life == MAXLIFE) {
+                if (money < 750) {
+                  money = 0;
+                } else {
+                  money = money - 750;
+                }
+              }
+            } break;
+
+          case 2:
+            if (player.fuel == MAXFUEL) {
+              player.isLanding = 0;
+            }
+            else {
+              if (player.fuel < MAXFUEL) {
+                player.fuel++;
+              }
+              if (player.fuel == MAXFUEL) {
+                if (money < 750) {
+                  money = 0;
+                } else {
+                  money = money - 150;
+                }
+              }
+            } break;
+
+          case 3:
+            if (player.life == MAXLIFE) {
+              player.isLanding = 0;
+            }
+            else {
+              if (player.life < MAXLIFE) {
+                player.life++;
+              }
+              if (player.life == MAXLIFE) {
+                if (money < 750) {
+                  money = 0;
+                } else {
+                  money = money - 750;
+                }
+              }
+            } break;
+
+          case 4:
+            if (player.fuel == MAXFUEL) {
+              player.isLanding = 0;
+            }
+            else {
+              if (player.fuel < MAXFUEL) {
+                player.fuel++;
+              }
+              if (player.fuel == MAXFUEL) {
+                if (money < 750) {
+                  money = 0;
+                } else {
+                  money = money - 150;
+                }
+              }
+            } break;
+        }
+      }
+    }
+  }
+}
+
+//##################################################################
+//##################################################################
+void fnctn_checkFuel() {
+  if (player.altitude > 0) {
+    player.fuelCheck = (player.fuelCheck + 1) % 100;
+    if (player.fuelCheck == 0 && player.fuel > 0) {
+      player.fuel--;
+    }
+    if (player.fuel == 0) {
+      player.isCrashing = 1;
+      player.isLanding = 1;
+    }
+  }
+}
+
+//##################################################################
+//##################################################################
+byte fnctn_playerXpos(int x) {
+  if (x < SCREENWIDTH / 2)                                 {
+    return x;
+  }
+  if (x >= SCREENWIDTH / 2 && x <= LEVELWIDTH - SCREENWIDTH / 2) {
+    return SCREENWIDTH / 2;
+  }
+  if (x > LEVELWIDTH - SCREENWIDTH / 2)                      {
+    return (SCREENWIDTH) - (LEVELWIDTH - x);
+  }
+}
+
+//##################################################################
+//##################################################################
+byte fnctn_playerYpos(int y) {
+  if (y < SCREENHEIGHT / 2 + VERTALIGNMENT)                                                {
+    return y;
+  }
+  if (y >= SCREENHEIGHT / 2 + VERTALIGNMENT && y <= LEVELHEIGHT - SCREENHEIGHT / 2 + VERTALIGNMENT) {
+    return SCREENHEIGHT / 2 + VERTALIGNMENT;
+  }
+  if (y > LEVELHEIGHT - SCREENHEIGHT / 2 + VERTALIGNMENT)                                    {
+    return (SCREENHEIGHT) - (LEVELHEIGHT - y);
+  }
+}
+
+//##################################################################
+//##################################################################
+int fnctn_backgrndXpos(int x) {
+  if (player.x_world < SCREENWIDTH / 2)                                                {
+    return (x % SPRITESIZE + SPRITESIZE) % SPRITESIZE;
+  }
+  if (player.x_world >= SCREENWIDTH / 2 && player.x_world <= LEVELWIDTH - SCREENWIDTH / 2)   {
+    return ((x - (player.x_world - SCREENWIDTH / 2)) % SPRITESIZE + SPRITESIZE) % SPRITESIZE;
+  }
+  if (player.x_world > LEVELWIDTH - SCREENWIDTH / 2)                                     {
+    return (((SCREENWIDTH) - (LEVELWIDTH - x)) % SPRITESIZE + SPRITESIZE) % SPRITESIZE;
+  }
+}
+
+//##################################################################
+//##################################################################
+int fnctn_backgrndYpos(int y) {
+  if (player.y_world < SCREENHEIGHT / 2 + VERTALIGNMENT)                                                             {
+    return (y % SPRITESIZE + SPRITESIZE) % SPRITESIZE;
+  }
+  if (player.y_world >= SCREENHEIGHT / 2 + VERTALIGNMENT && player.y_world <= LEVELHEIGHT - SCREENHEIGHT / 2 + VERTALIGNMENT) {
+    return ((y - (player.y_world - (VERTALIGNMENT + SCREENHEIGHT / 2))) % SPRITESIZE + SPRITESIZE) % SPRITESIZE;
+  }
+  if (player.y_world > LEVELHEIGHT - SCREENHEIGHT / 2 + VERTALIGNMENT)                                                 {
+    return (((SCREENHEIGHT) - (LEVELHEIGHT - y)) % SPRITESIZE + SPRITESIZE) % SPRITESIZE;
+  }
+}
+
+//##################################################################
+//##################################################################
+int fnctn_lndscapeXpos(int x) {
+  if (player.x_world < SCREENWIDTH / 2)                                                {
+    return x;
+  }
+  if (player.x_world >= SCREENWIDTH / 2 && player.x_world <= LEVELWIDTH - SCREENWIDTH / 2)   {
+    return (x - (player.x_world - SCREENWIDTH / 2));
+  }
+  if (player.x_world > LEVELWIDTH - SCREENWIDTH / 2)                                     {
+    return ((SCREENWIDTH) - (LEVELWIDTH - x));
+  }
+}
+
+//##################################################################
+//##################################################################
+int fnctn_lndscapeYpos(int y) {
+  if (player.y_world < SCREENHEIGHT / 2 + VERTALIGNMENT)                                                             {
+    return y;
+  }
+  if (player.y_world >= SCREENHEIGHT / 2 + VERTALIGNMENT && player.y_world <= LEVELHEIGHT - SCREENHEIGHT / 2 + VERTALIGNMENT) {
+    return (y - (player.y_world - (VERTALIGNMENT + SCREENHEIGHT / 2)));
+  }
+  if (player.y_world > LEVELHEIGHT - SCREENHEIGHT / 2 + VERTALIGNMENT)                                                 {
+    return ((SCREENHEIGHT) - (LEVELHEIGHT - y));
+  }
+}
+
+//##################################################################
+//##################################################################
+void fnctn_animation() {
+  if (player.fuel > 0 && player.altitude > 0) {
+    player.animHelix = (player.animHelix + 1) % 4;
+  }
+  cptAnim = (cptAnim + 1) % 50;
+  if (player.isCrashing == 1 && player.altitude == 0 && player.animBoom < 11) {
+    player.animBoom++;
+  }
+  if (player.animDamage > 0) {
+    player.animDamage--;
+  }
+  if (Camion.animDamage > 0) {
+    Camion.animDamage--;
+  }
+
+  for (i = 0; i < nbBuilding_Hostile; i++) {
+    if (building_hostile[i].life == 0 && building_hostile[i].animBoom < 12) {
+      building_hostile[i].animBoom++;
+    }
+    if (building_hostile[i].fireTimer > 0) {
+      building_hostile[i].fireTimer--;
+    }
+  }
+
+  for (i = 0; i < nbBuilding_Friend; i++) {
+    if (building_friend[i].life == 0 && building_friend[i].animBoom < 12) {
+      building_friend[i].animBoom++;
+    }
+  }
+
+  for (i = 0; i < 20; i++) {
+    if (mobilUnit_hostile[i].life == 0 && mobilUnit_hostile[i].animBoom < TMPRESURECTION + 1) {
+      mobilUnit_hostile[i].animBoom++;
+    }
+    if (mobilUnit_hostile[i].fireTimer > 0) {
+      mobilUnit_hostile[i].fireTimer--;
+    }
+  }
+
+}
+
+//##################################################################
+//##################################################################
+void updateFriendMobile() {
+  //{camionD,camionHD,camionBD,camionG,camionHG,camionBG,camionH,camionB}
+  if (currentCheckPoint < NB_CHECK_POINT && Camion.life>0) {
+
+    int checkPoint_x = pgm_read_word_near(&CheckPoint[currentCheckPoint].x_world);
+    int checkPoint_y = pgm_read_word_near(&CheckPoint[currentCheckPoint].y_world);
+    int dist = sqrt(pow(checkPoint_x - Camion.x_world, 2) + pow(checkPoint_y - Camion.y_world, 2));
+
+    if (dist < 3) {
+      if (currentCheckPoint == 5 || currentCheckPoint == 7 || currentCheckPoint == 10) {
+        wait_time--;
+        if (wait_time == 0) {
+          wait_time = WAIT_TIME;
           currentCheckPoint++;
         }
-      } else {
-        if (gb.frameCount % 2 == 0) {
-          return;
-        }
-        //sinon je bouge
-        Camion.dir = 5;
-        if (checkPoint_x > Camion.x_world) {
-          Camion.x_world++;
-          //il vas ver la droite
-          Camion.dir = 0;
-        } else if (checkPoint_x < Camion.x_world) {
-          Camion.x_world--;
-          //il vas ver la gauche
-          Camion.dir = 3;
+        if (currentCheckPoint == 7 && cptExplosion < TEMP_EXPOLOSION) {
+          if(cptExplosion == 0){outpt_soundfx(1);}
+          cptExplosion++;
         }
 
-        if (checkPoint_y > Camion.y_world) {
-          Camion.y_world++;
-          //il vas ver le bas
-          Camion.dir += 2;
-        } else if (checkPoint_y < Camion.y_world) {
-          Camion.y_world--;
-          //il vas ver le haut
-          Camion.dir += 1;
-        }
+      } else {
+        currentCheckPoint++;
       }
     } else {
-      convoiSecuriser = true;
-    }
-  }
+      if (gb.frameCount % 2 == 0) {
+        return;
+      }
+      //sinon je bouge
+      Camion.dir = 5;
+      if (checkPoint_x > Camion.x_world) {
+        Camion.x_world++;
+        //il vas ver la droite
+        Camion.dir = 0;
+      } else if (checkPoint_x < Camion.x_world) {
+        Camion.x_world--;
+        //il vas ver la gauche
+        Camion.dir = 3;
+      }
 
-  void initFriendMobile() {
-    Camion.x_world = 117;
-    Camion.y_world = 63;
-    Camion.width = 16;
-    Camion.height = 14;
-    Camion.animBoom = 14;
-    Camion.dir = 0;
-    Camion.life = 240;
-    convoiSecuriser = false;
+      if (checkPoint_y > Camion.y_world) {
+        Camion.y_world++;
+        //il vas ver le bas
+        Camion.dir += 2;
+      } else if (checkPoint_y < Camion.y_world) {
+        Camion.y_world--;
+        //il vas ver le haut
+        Camion.dir += 1;
+      }
+    }
+  } else {
+    convoiSecuriser = true;
   }
+}
+
+void initFriendMobile() {
+  Camion.x_world = 117;
+  Camion.y_world = 63;
+  Camion.width = 16;
+  Camion.height = 14;
+  Camion.animBoom = 14;
+  Camion.dir = 0;
+  Camion.life = MAX_LIFE_CAM;
+  convoiSecuriser = false;
+}
 
 
 
