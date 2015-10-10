@@ -88,7 +88,7 @@ void updateList() {
     while (file.openNext(sd.vwd(), O_READ)) {
       if (doDispFile()) {
          //on verrifie l'ordre alphabetique sur les deux premier caractere
-        for(byte ii=0;ii<3;ii++)
+        for(byte ii=0;ii<PAGELENGTH;ii++)
         {
           if(completeName[0] == orderLVL[(selectedPage + ii)][0] && completeName[1] == orderLVL[(selectedPage + ii)][1])
           {
@@ -112,7 +112,7 @@ void updateList() {
         break;
       }
     }
-  
+
 
   gb.display.setColor(BLACK);
 

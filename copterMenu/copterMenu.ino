@@ -193,8 +193,7 @@ void loop() {
         displayGameScreen();
         updateList();
       }
-      gb.display.print(selectedPage);
-      
+
       if (gb.buttons.pressed(BTN_RIGHT)) {
         if(selectedPage<(numberOfFiles-1)){
             selectedPage++;
