@@ -54,17 +54,13 @@ const byte logo[] PROGMEM = {64,36,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0
 const byte floppy8x8[] PROGMEM = {8, 8, 0xCA, 0xCB, 0xC3, 0xFF, 0x81, 0x81, 0x81, 0xFF,};
 
 char nextGameName[9] = "\0\0\0\0\0\0\0\0";
-byte initres;
-byte res;
 int numberOfFiles;
-int numberOfPages;
 int selectedFile;
 int selectedPage = 0;
-int prevSelectedPage = 0;
 #define PAGELENGTH 3
 
 #define TOKENSIZE 5
-char token[TOKENSIZE + 1] = "gbinf";
+//char token[TOKENSIZE + 1] = "gbinf";
 
 #define NAMELENGTH 18
 
@@ -87,7 +83,6 @@ char token[TOKENSIZE + 1] = "gbinf";
 #define HEADERSIZE ((TOKENSIZE+1) + 1 + (NAMELENGTH+1) + ICON_LENGTH + 1)
 
 char thisPageFiles[PAGELENGTH][9];
-uint16_t thisPageClusters[PAGELENGTH];
 
 char orderLVL[20][2] = { 
   {'0','1'},
@@ -147,7 +142,7 @@ void initMenu()
   }
   
   
-   const char* address = SETTINGS_PAGE + OFFSET_CURRENTGAME;
+  const char* address = SETTINGS_PAGE + OFFSET_CURRENTGAME;
   nextGameName[0] = pgm_read_byte(address);
   nextGameName[1] = pgm_read_byte(address + 1);
   nextGameName[2] = pgm_read_byte(address + 2);
@@ -163,7 +158,6 @@ void initMenu()
   }
   
   if (nextGameName[0]) {
-    //saveeeprom();
     saveName();
   }
   numberOfFiles = 0;
@@ -174,7 +168,7 @@ void initMenu()
     }
     file.close();
   }
-  numberOfPages = ((numberOfFiles - 1) / PAGELENGTH) + 1;
+
   gb.display.textWrap = false;
   updateList();
 }

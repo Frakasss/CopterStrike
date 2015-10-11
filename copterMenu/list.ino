@@ -22,7 +22,6 @@ bool doDispFile() {
 }
 
 void updateCursor() {
-//  oldCursorPos = cursorPos;
   strcpy(completeName, thisPageFiles[cursorPos]);
   strcat(completeName, ".INF");
   bool displayed = false;
@@ -31,7 +30,7 @@ void updateCursor() {
     if (file.read(buffer, HEADERSIZE) == HEADERSIZE && buffer[VERSIONOFFSET] == 0x01) {
       buffer[1 + NAMEOFFSET + NAMELENGTH] = '\0';
       displayed = true; // this file has an INF file!
-      //printBottomHeader(buffer + NAMEOFFSET);
+
        gb.display.cursorX = 25;
        gb.display.cursorY = 8;
       gb.display.print(buffer + NAMEOFFSET);
@@ -56,17 +55,7 @@ void updateCursor() {
     }
   }
   file.close();
-  //check if there is a saved game
-  //regarder pour les 3 afficher afin de mettre le cadena a la place de la disquette
-  /*strcpy(completeName, thisPageFiles[cursorPos]);
-  strcat(completeName, ".SAV");
-  if (file.open(completeName, O_READ)) {
-    file.close();
-    gb.display.setColor(WHITE);
-    gb.display.fillRect(0, 40, 9, 8);
-    gb.display.setColor(BLACK);
-    gb.display.drawBitmap(0, 40, floppy8x8);
-  }*/
+
   gb.sound.playTick();
 }
 
@@ -80,11 +69,6 @@ void updateList() {
   sd.chdir('/');
 
   filesOnPage = 0;
-  /*if(selectedPage == 0 && filesOnPage == 0){
-    thisPageFiles[filesOnPage][0] = '\0';
-    filesOnPage++;
-  }*/
-
     while (file.openNext(sd.vwd(), O_READ)) {
       if (doDispFile()) {
          //on verrifie l'ordre alphabetique sur les deux premier caractere
@@ -113,9 +97,7 @@ void updateList() {
       }
     }
 
-
   gb.display.setColor(BLACK);
-
 
   //draw game icons
   for (byte k = 0; k < filesOnPage; k++) {
@@ -156,22 +138,6 @@ void updateList() {
       strncpy(halfName, thisPageFiles[k] + 4, 4);
       gb.display.print(halfName);
     }
-    
-    //check if there is a saved game
-    //regarder pour les 3 afficher afin de mettre le cadena a la place de la disquette
-//    strcpy(completeName, thisPageFiles[cursorPos]);
-    /*strcpy(completeName, thisPageFiles[k]);
-    strcat(completeName, ".SAV");
-    if (!file.open(completeName, O_READ)) {
-      gb.display.setColor(WHITE);
-      gb.display.fillRect(x, y, 9, 8);
-      gb.display.setColor(BLACK);
-      gb.display.drawBitmap(x, y, floppy8x8);
-    }else{
-      file.close();
-    }*/
   }
-
-  //oldCursorPos = PAGELENGTH;
   updateCursor();
 }
