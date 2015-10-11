@@ -38,41 +38,17 @@ void displayGameScreen() {
         currentSlide %= slideNumber;
         drawSlide(currentSlide);
         scrollBarTimeLeft = 12;
+          nextMoveG = -1;
       } else {
         if (gb.buttons.pressed(BTN_DOWN) || (gb.buttons.states[BTN_DOWN] > 10 && gb.buttons.repeat(BTN_DOWN, 3)))  {
           currentSlide ++;
           currentSlide %= slideNumber;
           drawSlide(currentSlide);
           scrollBarTimeLeft = 12;
+          nextMoveG = -1;
         }
       }
-
-
-
-      /*if (gb.buttons.repeat(BTN_RIGHT, 3)) {
-        menuSelection = (menuSelection + 1) % MENU_SIZE;
-      } else {
-        if (gb.buttons.repeat(BTN_LEFT, 3)) {
-          menuSelection = (menuSelection + MENU_SIZE - 1) % MENU_SIZE;
-        }
-      }*/
-
-      /*if (askingConfirmation) {
-        printBottomHeader(F("Hold A to delete"));
-      } else {
-        switch (menuSelection) {
-          case MENU_PLAY :
-            printBottomHeader(F("\21 PLAY \20"));
-            break;
-          case MENU_DELETESAVE:
-            printBottomHeader(F("\21 DELETE SAVE \20"));
-            break;
-          case MENU_DELETEGAME:
-            printBottomHeader(F("\21 DELETE GAME \20"));
-            break;
-        }
-      }*/
-
+      
       if ((slideNumber > 1) && (scrollBarTimeLeft > 0)) {
         scrollBarTimeLeft --;
         if (!scrollBarTimeLeft) { //time to hide the scrollbar and redraw the bitmap
@@ -80,6 +56,7 @@ void displayGameScreen() {
           gb.display.fillRect(LCDWIDTH - 5, 7, 5, LCDHEIGHT - 7 - 7);
           gb.display.setColor(BLACK);
           drawSlide(currentSlide);
+          nextMoveG = -1;
         } else { //draw the scrollbar
           gb.display.setColor(WHITE);
           gb.display.fillRect(LCDWIDTH - 5, 7, 5, LCDHEIGHT - 7 - 7);
@@ -92,18 +69,6 @@ void displayGameScreen() {
                               1 + max(3, (LCDHEIGHT - 7 - 7) / slideNumber));
         }
       }
-
-      //draw a floppy if there is a saved game
-      /*strcpy(completeName, thisPageFiles[cursorPos]);
-      strcat(completeName, ".SAV");
-      if (file.open(completeName, O_READ)) {
-        file.close();
-        gb.display.setColor(WHITE);
-        gb.display.fillRect(0, 40, 9, 8);
-        gb.display.setColor(BLACK);
-        gb.display.drawBitmap(0, 40, floppy8x8);
-      }*/
-
 
       if(nextMoveG<0){
         nextMoveG = random(MIN_VITT_BOUCHE_G,MAX_VITT_BOUCHE_G);
@@ -146,7 +111,9 @@ void initDisplayGameScreen() {
     if (file.read(buffer, HEADERSIZE) == HEADERSIZE && buffer[VERSIONOFFSET] == 0x01) {
       buffer[1 + NAMEOFFSET + NAMELENGTH] = '\0';
       displayed = true; // this file has an INF file!
-      printTopHeader(buffer + NAMEOFFSET);
+      gb.display.cursorY = 5;
+      gb.display.cursorX = 30;
+      gb.display.print(buffer + NAMEOFFSET);
       slideNumber = buffer[SLIDENUMBEROFFSET];
     }
   }
@@ -159,10 +126,8 @@ void initDisplayGameScreen() {
     gb.display.cursorX = 30;
     if (file.isLFN()) {
       file.getName(buffer, NAMELENGTH);
-      //printTopHeader(buffer);
       gb.display.print(buffer);
     } else {
-      //printTopHeader(thisPageFiles[cursorPos]);
       gb.display.print(thisPageFiles[cursorPos]);
     }
   }
